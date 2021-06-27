@@ -1,8 +1,8 @@
 package dev.vinigouveia.factsnorris
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import dev.vinigouveia.factsnorris.ui.main.MainFragment
+import androidx.appcompat.app.AppCompatActivity
+import dev.vinigouveia.factsnorris.ui.facts.FactsFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -11,7 +11,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_activity)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance())
+                .replace(R.id.container, FactsFragment.newInstance())
                 .commitNow()
         }
     }
