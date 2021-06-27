@@ -18,8 +18,4 @@ class FactsFragment : Fragment() {
     ): View {
         return inflater.inflate(R.layout.facts_fragment, container, false)
     }
-
-    companion object {
-        fun newInstance() = FactsFragment()
-    }
 }

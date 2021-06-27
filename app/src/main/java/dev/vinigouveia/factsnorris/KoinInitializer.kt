@@ -8,6 +8,7 @@ import org.koin.core.context.startKoin
 /**
  * @author Vinicius Gouveia on 26/06/2021
  */
+@Suppress("Unused")
 class KoinInitializer : Application() {
 
     override fun onCreate() {
