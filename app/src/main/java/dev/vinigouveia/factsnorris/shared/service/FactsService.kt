@@ -1,6 +1,6 @@
 package dev.vinigouveia.factsnorris.shared.service
 
-import dev.vinigouveia.factsnorris.shared.data.FactsListResponse
+import dev.vinigouveia.factsnorris.shared.data.response.FactsListResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -10,8 +10,5 @@ import retrofit2.http.Query
 interface FactsService {
 
     @GET("/jokes/categories")
-    fun fetchCategories(): List<String>
-
-    @GET("/jokes/categories")
-    fun fetchFacts(@Query("query") search: String): FactsListResponse
+    suspend fun fetchFacts(@Query("query") search: String): FactsListResponse
 }

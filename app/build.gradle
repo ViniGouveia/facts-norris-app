@@ -41,6 +41,10 @@ android {
         viewBinding = true
     }
 
+    packagingOptions {
+        exclude 'META-INF/atomicfu.kotlin_module'
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -89,4 +93,13 @@ dependencies {
 
     // OkHttp Dependencies
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
+
+    // Room Dependencies
+    kapt("androidx.room:room-compiler:2.3.0")
+    implementation("androidx.room:room-ktx:2.3.0")
+    androidTestImplementation("androidx.room:room-testing:2.3.0")
+
+    // Coroutines Dependencies
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0")
 }

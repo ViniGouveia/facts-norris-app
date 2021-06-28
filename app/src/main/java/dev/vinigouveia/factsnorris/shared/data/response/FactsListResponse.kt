@@ -1,4 +1,4 @@
-package dev.vinigouveia.factsnorris.shared.data
+package dev.vinigouveia.factsnorris.shared.data.response
 
 import com.squareup.moshi.Json
 

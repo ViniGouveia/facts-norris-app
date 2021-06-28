@@ -1,8 +1,9 @@
-package dev.vinigouveia.factsnorris.shared.network
+package dev.vinigouveia.factsnorris.shared.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dev.vinigouveia.factsnorris.R
+import dev.vinigouveia.factsnorris.shared.service.CategoriesService
 import dev.vinigouveia.factsnorris.shared.service.FactsService
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
@@ -47,6 +48,7 @@ val retrofitModule = module {
 
 val serviceModule = module {
     single { get<Retrofit>().create(FactsService::class.java) }
+    single { get<Retrofit>().create(CategoriesService::class.java) }
 }
 
 val networkModules = listOf(moshiModule, retrofitModule, serviceModule)
