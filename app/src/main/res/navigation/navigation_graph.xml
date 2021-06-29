@@ -11,7 +11,7 @@
         android:label="FactsFragment"
         tools:layout="@layout/facts_fragment">
         <action
-            android:id="@+id/action_factsFragment_to_placeholder5"
+            android:id="@+id/navigate_to_search_from_facts"
             app:destination="@id/search_fragment" />
     </fragment>
 

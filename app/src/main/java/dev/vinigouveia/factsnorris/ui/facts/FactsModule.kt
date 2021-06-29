@@ -8,5 +8,14 @@ import org.koin.dsl.module
  */
 
 val factsModule = module {
-    viewModel { FactsViewModel() }
+    factory { FactsAdapter() }
+    viewModel {
+        FactsViewModel(
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
+        )
+    }
 }

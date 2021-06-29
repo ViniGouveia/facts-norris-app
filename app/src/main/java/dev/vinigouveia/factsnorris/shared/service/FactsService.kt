@@ -9,6 +9,6 @@ import retrofit2.http.Query
  */
 interface FactsService {
 
-    @GET("/jokes/categories")
+    @GET("/jokes/search")
     suspend fun fetchFacts(@Query("query") search: String): FactsListResponse
 }

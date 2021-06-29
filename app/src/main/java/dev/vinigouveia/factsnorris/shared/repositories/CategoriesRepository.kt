@@ -27,4 +27,3 @@ class CategoriesRepositoryImpl(
     override suspend fun fetchCategories() =
         categoriesService.fetchCategories()
 }
-

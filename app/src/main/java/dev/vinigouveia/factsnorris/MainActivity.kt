@@ -15,6 +15,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.factsSearch.setOnClickListener {
+            navigator.navigate(R.id.navigate_to_search_from_facts)
+        }
     }
 
     override fun onResume() {
