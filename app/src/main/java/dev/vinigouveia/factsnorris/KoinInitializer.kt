@@ -1,21 +1,23 @@
 package dev.vinigouveia.factsnorris
 
-import android.app.Application
+import android.content.Context
+import androidx.startup.Initializer
 import dev.vinigouveia.factsnorris.shared.di.appModules
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 
 /**
  * @author Vinicius Gouveia on 26/06/2021
  */
 @Suppress("Unused")
-class KoinInitializer : Application() {
+class KoinInitializer : Initializer<KoinApplication> {
 
-    override fun onCreate() {
-        super.onCreate()
+    override fun create(context: Context): KoinApplication =
         startKoin {
-            androidContext(this@KoinInitializer)
+            androidContext(context)
             modules(appModules)
         }
-    }
+
+    override fun dependencies(): List<Class<out Initializer<*>>> = emptyList()
 }

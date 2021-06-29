@@ -9,8 +9,8 @@ import dev.vinigouveia.factsnorris.shared.room.dao.SearchWordDao
 
 interface SearchWordRepository {
     suspend fun insertSearchWord(searchWord: SearchWordEntity)
-    suspend fun getLastSearchWord(): SearchWordEntity
-    suspend fun getLastSearchWordList(): List<SearchWordEntity>
+    suspend fun getLastSearchWord(): String
+    suspend fun getLastSearchWordList(): List<String>
     suspend fun deleteLastSearchWord()
 }
 
@@ -21,10 +21,10 @@ class SearchWordRepositoryImpl(
         searchWordDao.insertSearchWord(searchWord)
 
     override suspend fun getLastSearchWord() =
-        searchWordDao.getLastSearchWord()
+        searchWordDao.getLastSearchWord().searchWord
 
     override suspend fun getLastSearchWordList() =
-        searchWordDao.getLastSearchWordList()
+        searchWordDao.getLastSearchWordList().map(SearchWordEntity::searchWord)
 
     override suspend fun deleteLastSearchWord() =
         searchWordDao.deleteLastSearchWord()

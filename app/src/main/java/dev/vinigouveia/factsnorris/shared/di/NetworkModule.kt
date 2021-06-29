@@ -6,6 +6,7 @@ import dev.vinigouveia.factsnorris.R
 import dev.vinigouveia.factsnorris.shared.service.CategoriesService
 import dev.vinigouveia.factsnorris.shared.service.FactsService
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -35,6 +36,10 @@ val retrofitModule = module {
             .readTimeout(TIMEOUT_REQUEST_TIME, TimeUnit.SECONDS)
             .writeTimeout(TIMEOUT_REQUEST_TIME, TimeUnit.SECONDS)
             .connectTimeout(TIMEOUT_REQUEST_TIME, TimeUnit.SECONDS)
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level =
+                    HttpLoggingInterceptor.Level.BODY
+            })
             .build()
             .let { client ->
                 Retrofit.Builder()

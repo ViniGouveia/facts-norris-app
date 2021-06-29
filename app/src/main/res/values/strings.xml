@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Facts Norris</string>
+
+    <!-- Facts Fragment -->
+    <string name="facts_quantity">Facts:</string>
+    <string name="facts_category">Searching for:</string>
+    <string name="facts_category_empty">----</string>
+    <string name="facts_quantity_empty">0</string>
+    <string name="fact_uncategorized">Uncategorized</string>
+    <string name="share_fact_message">Hey!! I have an amazing Chuck Norris fact for you! Check it out:\n\n%s\n\n%s</string>
+    <!-- Facts Fragment -->
+
+    <!-- Error Messages -->
+    <string name="no_connection_error_message">Failed to connect to the server. Check your internet connection and tap here to try again!</string>
+    <string name="default_error_message">An unexpected problem happened on the server! Tap here to try again.</string>
+    <string name="empty_list_error_message">No facts found!\nPlease, try to search for another term or tap here to try again.</string>
+    <string name="first_access_message">Yours facts are going to be listed here!!\n But first, you need to tap the search button above and select or type a search word.</string>
+    <!-- Error Messages -->
+
 </resources>

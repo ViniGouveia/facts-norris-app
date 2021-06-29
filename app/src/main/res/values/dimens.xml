@@ -1,0 +1,25 @@
+<resources>
+
+    <!-- Default Spaces -->
+    <dimen name="spacing_mini">1dp</dimen>
+    <dimen name="spacing_tiny">4dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_medium">10dp</dimen>
+    <dimen name="spacing_normal">16dp</dimen>
+    <dimen name="spacing_large">24dp</dimen>
+    <dimen name="spacing_huge">48dp</dimen>
+    <!-- Default Spaces -->
+
+    <!-- Default Text Sizes -->
+    <dimen name="text_small">12sp</dimen>
+    <dimen name="text_medium">16sp</dimen>
+    <dimen name="text_normal">20sp</dimen>
+    <dimen name="text_large">24sp</dimen>
+    <dimen name="text_huge">32sp</dimen>
+    <!-- Default Text Sizes -->
+
+    <!-- Progress Bar Loading Size -->
+    <dimen name="progress_bar_loading_size">120dp</dimen>
+    <!-- Progress Bar Loading Size -->
+
+</resources>
