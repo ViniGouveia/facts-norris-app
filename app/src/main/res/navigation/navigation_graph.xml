@@ -15,6 +15,10 @@
             app:destination="@id/search_fragment" />
     </fragment>
 
-    <fragment android:id="@+id/search_fragment" />
+    <fragment
+        android:id="@+id/search_fragment"
+        android:name="dev.vinigouveia.factsnorris.ui.search.SearchFragment"
+        android:label="SearchFragment"
+        tools:layout="@layout/search_fragment" />
 
 </navigation>

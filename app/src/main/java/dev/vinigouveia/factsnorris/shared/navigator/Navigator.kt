@@ -2,6 +2,7 @@ package dev.vinigouveia.factsnorris.shared.navigator
 
 import androidx.annotation.IdRes
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 
 /**
  * @author Vinicius Gouveia on 27/06/2021

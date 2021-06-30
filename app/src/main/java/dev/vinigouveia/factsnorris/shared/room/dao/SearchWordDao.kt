@@ -21,6 +21,9 @@ interface SearchWordDao {
     @Query("SELECT * FROM search_word_table ORDER BY id DESC")
     suspend fun getLastSearchWordList(): List<SearchWordEntity>
 
+    @Query("DELETE FROM search_word_table WHERE searchWord = :searchWord")
+    suspend fun deleteSearchWordByWord(searchWord: String)
+
     @Query(
         """
         DELETE FROM search_word_table 

@@ -6,9 +6,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:textColor="@color/white"
-    android:textSize="@dimen/text_small"
-    app:chipBackgroundColor="@color/colorPrimaryDark"
-    app:chipStrokeColor="@color/black"
+    android:textColor="@color/colorPrimaryDark"
+    android:textSize="@dimen/text_medium"
+    app:chipBackgroundColor="@color/white"
+    app:chipStrokeColor="@color/colorPrimaryDark"
     app:chipStrokeWidth="@dimen/spacing_mini"
     tools:text="Category" />

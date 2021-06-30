@@ -1,5 +1,6 @@
 package dev.vinigouveia.factsnorris.shared.usecases
 
+import dev.vinigouveia.factsnorris.shared.errorhandler.exceptions.SearchTermNotFoundException
 import dev.vinigouveia.factsnorris.shared.repositories.SearchWordRepository
 
 /**
@@ -18,6 +19,4 @@ class GetLastSearchWordUseCaseImpl(
         } catch (@Suppress("TooGenericExceptionCaught") error: Exception) {
             throw SearchTermNotFoundException
         }
-
-    object SearchTermNotFoundException : Exception()
 }

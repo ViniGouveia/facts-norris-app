@@ -9,5 +9,6 @@ interface FactsContract {
     interface ViewModel {
         fun shareFact(id: String): Fact
         fun getLastSearchWordAndFetchFacts()
+        fun navigateToShareFragment()
     }
 }
