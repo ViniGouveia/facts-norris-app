@@ -15,6 +15,7 @@ val factsModule = module {
             get(),
             get(),
             get(),
+            get(),
             get()
         )
     }

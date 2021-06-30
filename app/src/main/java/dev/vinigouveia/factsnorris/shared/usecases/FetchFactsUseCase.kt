@@ -1,6 +1,7 @@
 package dev.vinigouveia.factsnorris.shared.usecases
 
 import dev.vinigouveia.factsnorris.shared.data.Fact
+import dev.vinigouveia.factsnorris.shared.errorhandler.exceptions.EmptyFactsListReturnedException
 import dev.vinigouveia.factsnorris.shared.repositories.FactsRepository
 
 /**
@@ -16,9 +17,7 @@ class FetchFactsUseCaseImpl(
     override suspend fun fetchFacts(searchWord: String): List<Fact> {
         val response = repository.fetchFacts(searchWord)
 
-        if (response.isEmpty()) throw EmptyListReturnedException
+        if (response.isEmpty()) throw EmptyFactsListReturnedException
         else return response
     }
-
-    object EmptyListReturnedException : Exception()
 }

@@ -10,7 +10,7 @@ import dev.vinigouveia.factsnorris.shared.service.CategoriesService
 
 interface CategoriesRepository {
     suspend fun getRandomSuggestions(): List<String>
-    suspend fun insetCategories(categories: List<String>)
+    suspend fun saveCategories(categories: List<String>)
     suspend fun fetchCategories(): List<String>
 }
 
@@ -21,7 +21,7 @@ class CategoriesRepositoryImpl(
     override suspend fun getRandomSuggestions(): List<String> =
         categoryDao.getRandomSuggestions().map(CategoryEntity::category)
 
-    override suspend fun insetCategories(categories: List<String>) =
+    override suspend fun saveCategories(categories: List<String>) =
         categoryDao.insertAllCategories(categories.map(::CategoryEntity))
 
     override suspend fun fetchCategories() =

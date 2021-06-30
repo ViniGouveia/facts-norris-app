@@ -24,8 +24,8 @@ class FactsFragment : Fragment() {
 
     private val binding get() = viewBind!!
 
-    private val factsAdapter: FactsAdapter by inject()
-    private val factsViewModel: FactsViewModel by viewModel()
+    private val adapter: FactsAdapter by inject()
+    private val viewModel: FactsViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,7 +52,7 @@ class FactsFragment : Fragment() {
     private fun initializeEvents() {
         binding.apply {
             val factsObserver =
-                Observer<List<FactDisplay>> { facts -> factsAdapter.submitList(facts) }
+                Observer<List<FactDisplay>> { facts -> adapter.submitList(facts) }
             val searchWordObserver = Observer<String> { category -> factsCategory.text = category }
             val quantityObserver = Observer<String> { quantity -> factsQuantity.text = quantity }
             val loadingStateObserver =
@@ -64,7 +64,7 @@ class FactsFragment : Fragment() {
                 errorText.isVisible = hasError
             }
 
-            with(factsViewModel) {
+            with(viewModel) {
                 viewLifecycleOwner.also {
                     factsList.observe(it, factsObserver)
                     searchWord.observe(it, searchWordObserver)
@@ -82,12 +82,13 @@ class FactsFragment : Fragment() {
     private fun initializeElements() {
         binding.apply {
             factsList.also {
-                it.adapter = factsAdapter.apply {
-                    onItemClick = { id -> shareFact(factsViewModel.shareFact(id)) }
+                it.adapter = adapter.apply {
+                    onItemClick = { id -> shareFact(viewModel.shareFact(id)) }
                 }
                 it.layoutManager = LinearLayoutManager(requireContext())
             }
-            errorText.setOnClickListener { factsViewModel.getLastSearchWordAndFetchFacts() }
+            errorText.setOnClickListener { viewModel.getLastSearchWordAndFetchFacts() }
+            searchButton.setOnClickListener { viewModel.navigateToShareFragment() }
         }
     }
 

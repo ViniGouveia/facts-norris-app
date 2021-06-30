@@ -3,9 +3,11 @@ package dev.vinigouveia.factsnorris.ui.facts
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.vinigouveia.factsnorris.R
 import dev.vinigouveia.factsnorris.shared.data.Fact
 import dev.vinigouveia.factsnorris.shared.data.FactDisplay
 import dev.vinigouveia.factsnorris.shared.errorhandler.ErrorHandler
+import dev.vinigouveia.factsnorris.shared.navigator.Navigator
 import dev.vinigouveia.factsnorris.shared.threadprovider.ThreadProvider
 import dev.vinigouveia.factsnorris.shared.usecases.FetchFactsUseCase
 import dev.vinigouveia.factsnorris.shared.usecases.GetLastSearchWordUseCase
@@ -13,6 +15,7 @@ import dev.vinigouveia.factsnorris.shared.usecases.GetMappedFactsListUseCase
 import kotlinx.coroutines.launch
 
 class FactsViewModel(
+    private val navigator: Navigator,
     private val threadProvider: ThreadProvider,
     private val errorHandler: ErrorHandler,
     private val fetchFactsUseCase: FetchFactsUseCase,
@@ -29,19 +32,17 @@ class FactsViewModel(
     val loadingState = MutableLiveData<Boolean>()
     val errorState = MutableLiveData<Boolean>()
 
-    private var newSearchWord: String? = null
     private lateinit var facts: List<Fact>
 
     override fun getLastSearchWordAndFetchFacts() {
         viewModelScope.launch(threadProvider.io) {
             try {
-                newSearchWord = getLastSearchWordUseCase.getLastSearchWord()
-                searchWord.postValue(newSearchWord!!)
+                val newSearchWord = getLastSearchWordUseCase.getLastSearchWord()
+                searchWord.postValue(newSearchWord)
 
                 loadingState.postValue(true)
 
-                facts = fetchFactsUseCase.fetchFacts(newSearchWord!!)
-
+                facts = fetchFactsUseCase.fetchFacts(newSearchWord)
                 factsList.postValue(getMappedFactsListUseCase.getMappedFactsList(facts))
                 quantity.postValue(facts.size.toString())
 
@@ -54,6 +55,9 @@ class FactsViewModel(
             }
         }
     }
+
+    override fun navigateToShareFragment() =
+        navigator.navigate(R.id.navigate_to_search_from_facts)
 
     override fun shareFact(id: String) =
         facts.first { it.id == id }

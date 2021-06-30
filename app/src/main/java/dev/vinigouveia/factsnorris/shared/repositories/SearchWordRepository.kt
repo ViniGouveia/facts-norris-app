@@ -8,16 +8,17 @@ import dev.vinigouveia.factsnorris.shared.room.dao.SearchWordDao
  */
 
 interface SearchWordRepository {
-    suspend fun insertSearchWord(searchWord: SearchWordEntity)
+    suspend fun saveSearchWord(searchWord: SearchWordEntity)
     suspend fun getLastSearchWord(): String
     suspend fun getLastSearchWordList(): List<String>
     suspend fun deleteLastSearchWord()
+    suspend fun deleteSearchWordByWord(searchWord: String)
 }
 
 class SearchWordRepositoryImpl(
     private val searchWordDao: SearchWordDao
 ) : SearchWordRepository {
-    override suspend fun insertSearchWord(searchWord: SearchWordEntity) =
+    override suspend fun saveSearchWord(searchWord: SearchWordEntity) =
         searchWordDao.insertSearchWord(searchWord)
 
     override suspend fun getLastSearchWord() =
@@ -28,4 +29,7 @@ class SearchWordRepositoryImpl(
 
     override suspend fun deleteLastSearchWord() =
         searchWordDao.deleteLastSearchWord()
+
+    override suspend fun deleteSearchWordByWord(searchWord: String) =
+        searchWordDao.deleteSearchWordByWord(searchWord)
 }
