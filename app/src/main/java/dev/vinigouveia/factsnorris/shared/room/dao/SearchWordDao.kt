@@ -15,21 +15,21 @@ interface SearchWordDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSearchWord(searchWord: SearchWordEntity)
 
-    @Query("SELECT * FROM search_word_table ORDER BY id DESC LIMIT 1")
-    suspend fun getLastSearchWord(): SearchWordEntity
+    @Query("SELECT * FROM last_searches_table ORDER BY id DESC LIMIT 1")
+    suspend fun getLatestSearchWord(): SearchWordEntity
 
-    @Query("SELECT * FROM search_word_table ORDER BY id DESC")
+    @Query("SELECT * FROM last_searches_table ORDER BY id DESC")
     suspend fun getLastSearchWordList(): List<SearchWordEntity>
 
-    @Query("DELETE FROM search_word_table WHERE searchWord = :searchWord")
+    @Query("DELETE FROM last_searches_table WHERE searchWord = :searchWord")
     suspend fun deleteSearchWordByWord(searchWord: String)
 
     @Query(
         """
-        DELETE FROM search_word_table 
+        DELETE FROM last_searches_table 
         WHERE id 
         IN (
-        SELECT id FROM search_word_table
+        SELECT id FROM last_searches_table
             ORDER BY id ASC
             LIMIT 1
         )

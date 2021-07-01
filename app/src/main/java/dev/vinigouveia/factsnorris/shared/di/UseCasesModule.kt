@@ -12,8 +12,8 @@ import dev.vinigouveia.factsnorris.shared.usecases.FetchFactsUseCase
 import dev.vinigouveia.factsnorris.shared.usecases.FetchFactsUseCaseImpl
 import dev.vinigouveia.factsnorris.shared.usecases.GetLastSearchWordListUseCase
 import dev.vinigouveia.factsnorris.shared.usecases.GetLastSearchWordListUseCaseImpl
-import dev.vinigouveia.factsnorris.shared.usecases.GetLastSearchWordUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.GetLastSearchWordUseCaseImpl
+import dev.vinigouveia.factsnorris.shared.usecases.GetLatestSearchWordUseCase
+import dev.vinigouveia.factsnorris.shared.usecases.GetLatestSearchWordUseCaseImpl
 import dev.vinigouveia.factsnorris.shared.usecases.GetMappedFactsListUseCase
 import dev.vinigouveia.factsnorris.shared.usecases.GetMappedFactsListUseCaseImpl
 import dev.vinigouveia.factsnorris.shared.usecases.GetRandomSuggestionsUseCase
@@ -37,7 +37,7 @@ import org.koin.dsl.module
 
 val useCasesModule = module {
     single<FetchFactsUseCase> { FetchFactsUseCaseImpl(get()) }
-    single<GetLastSearchWordUseCase> { GetLastSearchWordUseCaseImpl(get()) }
+    single<GetLatestSearchWordUseCase> { GetLatestSearchWordUseCaseImpl(get()) }
     single<GetMappedFactsListUseCase> { GetMappedFactsListUseCaseImpl(androidContext()) }
     single<DeleteLastSearchWordUseCase> { DeleteLastSearchWordUseCaseImpl(get()) }
     single<FetchCategoriesUseCase> { FetchCategoriesUseCaseImpl(get()) }

@@ -6,16 +6,16 @@ import dev.vinigouveia.factsnorris.shared.repositories.SearchWordRepository
 /**
  * @author Vinicius Gouveia on 29/06/2021
  */
-interface GetLastSearchWordUseCase {
-    suspend fun getLastSearchWord(): String
+interface GetLatestSearchWordUseCase {
+    suspend fun getLatestSearchWord(): String
 }
 
-class GetLastSearchWordUseCaseImpl(
+class GetLatestSearchWordUseCaseImpl(
     private val repository: SearchWordRepository
-) : GetLastSearchWordUseCase {
-    override suspend fun getLastSearchWord(): String =
+) : GetLatestSearchWordUseCase {
+    override suspend fun getLatestSearchWord(): String =
         try {
-            repository.getLastSearchWord()
+            repository.getLatestSearchWord()
         } catch (@Suppress("TooGenericExceptionCaught") error: Exception) {
             throw SearchTermNotFoundException
         }
