@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
  * @author Vinicius Gouveia on 29/06/2021
  */
 
+@Suppress("LongParameterList")
 class SearchViewModel(
     private val navigator: Navigator,
     private val errorHandler: ErrorHandler,
@@ -70,7 +71,7 @@ class SearchViewModel(
 
                 lastSearchesList.postValue(lastSearches)
                 suggestionsList.postValue(savedCategories)
-            } catch (@Suppress("TooGenericExceptionTooCaught") error: Exception) {
+            } catch (@Suppress("TooGenericExceptionCaught") error: Exception) {
                 loadingState.postValue(false)
                 errorMessage.postValue(errorHandler.getErrorMessage(error))
                 errorState.postValue(true)

@@ -17,12 +17,18 @@ buildscript {
     }
 }
 
+plugins {
+    id("io.gitlab.arturbosch.detekt").version("1.17.1")
+}
+
 allprojects {
     repositories {
         google()
         mavenCentral()
     }
 }
+
+apply(from: "detekt.gradle")
 
 task clean(type: Delete) {
     delete rootProject.buildDir

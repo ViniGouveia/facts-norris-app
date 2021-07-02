@@ -1,5 +1,6 @@
 package dev.vinigouveia.factsnorris.shared.usecases
 
+import android.util.Log
 import dev.vinigouveia.factsnorris.shared.errorhandler.exceptions.SearchTermNotFoundException
 import dev.vinigouveia.factsnorris.shared.repositories.SearchWordRepository
 
@@ -17,6 +18,7 @@ class GetLatestSearchWordUseCaseImpl(
         try {
             repository.getLatestSearchWord()
         } catch (@Suppress("TooGenericExceptionCaught") error: Exception) {
+            Log.e(null, error.toString())
             throw SearchTermNotFoundException
         }
 }
