@@ -8,18 +8,17 @@ import dev.vinigouveia.factsnorris.shared.data.Fact
 import dev.vinigouveia.factsnorris.shared.data.FactDisplay
 import dev.vinigouveia.factsnorris.shared.errorhandler.ErrorHandler
 import dev.vinigouveia.factsnorris.shared.navigator.Navigator
-import dev.vinigouveia.factsnorris.shared.threadprovider.ThreadProvider
 import dev.vinigouveia.factsnorris.shared.usecases.FetchFactsUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.GetLastSearchWordUseCase
+import dev.vinigouveia.factsnorris.shared.usecases.GetLatestSearchWordUseCase
 import dev.vinigouveia.factsnorris.shared.usecases.GetMappedFactsListUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FactsViewModel(
     private val navigator: Navigator,
-    private val threadProvider: ThreadProvider,
     private val errorHandler: ErrorHandler,
     private val fetchFactsUseCase: FetchFactsUseCase,
-    private val getLastSearchWordUseCase: GetLastSearchWordUseCase,
+    private val getLatestSearchWordUseCase: GetLatestSearchWordUseCase,
     private val getMappedFactsListUseCase: GetMappedFactsListUseCase
 ) : ViewModel(), FactsContract.ViewModel {
 
@@ -32,12 +31,12 @@ class FactsViewModel(
     val loadingState = MutableLiveData<Boolean>()
     val errorState = MutableLiveData<Boolean>()
 
-    private lateinit var facts: List<Fact>
+    private var facts: List<Fact> = listOf()
 
     override fun getLastSearchWordAndFetchFacts() {
-        viewModelScope.launch(threadProvider.io) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                val newSearchWord = getLastSearchWordUseCase.getLastSearchWord()
+                val newSearchWord = getLatestSearchWordUseCase.getLatestSearchWord()
                 searchWord.postValue(newSearchWord)
 
                 loadingState.postValue(true)
@@ -49,6 +48,8 @@ class FactsViewModel(
                 loadingState.postValue(false)
                 errorState.postValue(false)
             } catch (@Suppress("TooGenericExceptionCaught") error: Exception) {
+                facts = listOf()
+                quantity.postValue(facts.size.toString())
                 loadingState.postValue(false)
                 errorMessage.postValue(errorHandler.getErrorMessage(error))
                 errorState.postValue(true)

@@ -20,7 +20,7 @@
     <string name="no_connection_error_message">Failed to connect to the server.\nCheck your internet connection and tap here to try again!</string>
     <string name="default_error_message">An unexpected problem happened on the server!\nTap here to try again.</string>
     <string name="empty_list_error_message">No facts found!\nPlease, try to search for another term or tap here to try again.</string>
-    <string name="first_access_message">Yours facts are going to be listed here!!\n But first, you need to tap the search button above and select or type a search word.</string>
+    <string name="first_access_message">Yours facts are going to be listed here!!\n But first, you need to tap the search button below and select or type a search word.</string>
     <string name="search_no_suggestions_error">No suggestions found.\nTap here to try again.</string>
     <string name="back_button">Back</string>
     <!-- Error Messages -->

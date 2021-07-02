@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.vinigouveia.factsnorris.shared.errorhandler.ErrorHandler
 import dev.vinigouveia.factsnorris.shared.navigator.Navigator
-import dev.vinigouveia.factsnorris.shared.threadprovider.ThreadProvider
 import dev.vinigouveia.factsnorris.shared.usecases.AreCategoriesSavedUseCase
 import dev.vinigouveia.factsnorris.shared.usecases.DeleteLastSearchWordUseCase
 import dev.vinigouveia.factsnorris.shared.usecases.FetchCategoriesUseCase
@@ -16,6 +15,7 @@ import dev.vinigouveia.factsnorris.shared.usecases.IsSearchWordSavedUseCase
 import dev.vinigouveia.factsnorris.shared.usecases.SaveCategoriesUseCase
 import dev.vinigouveia.factsnorris.shared.usecases.SaveExistingSearchWordUseCase
 import dev.vinigouveia.factsnorris.shared.usecases.SaveSearchWordUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -24,7 +24,6 @@ import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val navigator: Navigator,
-    private val threadProvider: ThreadProvider,
     private val errorHandler: ErrorHandler,
     private val fetchCategoriesUseCase: FetchCategoriesUseCase,
     private val saveCategoriesUseCase: SaveCategoriesUseCase,
@@ -49,7 +48,7 @@ class SearchViewModel(
     private lateinit var lastSearches: List<String>
 
     override fun getSuggestionsAndLastSearches() {
-        viewModelScope.launch(threadProvider.io) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val areCategoriesSaved = areCategoriesSavedUseCase.areSavedCategories()
 
@@ -80,7 +79,7 @@ class SearchViewModel(
     }
 
     override fun saveSearchWordAndReturn(searchWord: String) {
-        viewModelScope.launch(threadProvider.io) {
+        viewModelScope.launch(Dispatchers.IO) {
             val isLastSearchesFull =
                 isLastSearchesListFullUseCase.isLastSearchesListFull(lastSearches.size)
 
