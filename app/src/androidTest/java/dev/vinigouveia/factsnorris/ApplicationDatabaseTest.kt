@@ -1,4 +1,4 @@
-package dev.vinigouveia.factsnorris.room
+package dev.vinigouveia.factsnorris
 
 import android.content.Context
 import androidx.room.Room
