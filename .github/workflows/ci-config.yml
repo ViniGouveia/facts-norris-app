@@ -33,11 +33,11 @@ jobs:
         run: bash ./gradlew testDebugUnitTest
       - name: Initialize Virtual Device
         uses: reactivecircus/android-emulator-runner@v2
-          with:
-            api-level: 23
-            target: default
-            arch: x86
-            profile: Nexus 6
-            script: bash ./gradlew connectedCheck --stacktrace
+        with:
+          api-level: 23
+          target: default
+          arch: x86
+          profile: Nexus 6
+          script: bash ./gradlew connectedCheck --stacktrace
       - name: Run Android tests
         run: bash ./gradlew connectedDebugAndroidTest
