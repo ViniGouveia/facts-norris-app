@@ -9,43 +9,35 @@ on:
   workflow_dispatch:
 
 jobs:
-
   code-analysis:
     name: Run Detekt for static code analysis
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
-      - name: Checkout
-      - uses: actions/checkout@v2.3.3
-      - name: Setup JDK environment
-        uses: actions/setup-java@v1.4.3
+      - uses: actions/checkout@v2
+      - name: Setup JDK
+        uses: actions/setup-java@v1
         with:
           java-version: 1.8
       - name: Run Detekt
         run: bash ./gradlew detekt
   test:
-    name: Run unit and instrumented tests
-    runs-on: ubuntu-latest
+    name: Run all module unit tests and check test coverage
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-      - name: Unit Test with Android Emulator Runner
-          uses: ReactiveCircus/android-emulator-runner@v2.14.3
-          with:
-            api-level: 29
-            script: ./gradlew connectedCheck
-
-              run: ./gradlew testDebugUnitTest
-
-                - name: Generate Jacoco Report
-                  uses: actions/upload-artifact@v2
-                  with:
-                    name: report
-                    path: app/build/reports/coverage/debug
-
-                - name: Download Test Reports Folder
-                  uses: actions/download-artifact@v2
-                  with:
-                    name: report
-                    path: app/build/reports/coverage/debug
-
-                - name: Upload Test Report
-                  run: bash <(curl -s https://codecov.io/bash) -f "app/build/reports/coverage/debug/report.xml"
+      - name: Setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Run Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 23
+          target: default
+          arch: x86
+          profile: Nexus 6
+          script: ./gradlew connectedCheck
+      - name: Generate Jacoco test report
+        run: bash ./gradlew jacocoTestReport
+      - name: Check code coverage
+        run: bash <(curl -s https://codecov.io/bash) -t ${{ secrets.CODECOV_TOKEN }} -f build/reports/jacoco/jacocoTestReport.xml
