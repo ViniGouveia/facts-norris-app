@@ -2,9 +2,11 @@ name: Android CI Configuration
 
 on:
   pull_request:
-    push:
-      branches:
-        - 'master'
+    branches:
+      - 'master'
+  push:
+    branches:
+      - 'master'
 
 jobs:
   build:
@@ -41,3 +43,14 @@ jobs:
           script: bash ./gradlew connectedCheck --stacktrace
       - name: Run Android tests
         run: bash ./gradlew connectedDebugAndroidTest
+  apk:
+    name: Generate APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build debug APK
+        run: bash ./gradlew assembleDebug --stacktrace
+      - name: Upload generated APK
+        uses: actions/upload-artifact@v1
+        with:
+          name: app
+          path: app/build/outputs/apk/debug/app-debug.apk
