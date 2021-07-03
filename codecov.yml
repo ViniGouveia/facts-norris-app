@@ -1,0 +1,8 @@
+{
+  "fixes": [
+      "/home/runner/work/facts-norris-app/facts-norris-app>/::"
+  ],
+  "codecov": {
+    "disable_default_path_fixes": true
+  }
+}

@@ -1,6 +1,6 @@
 apply(plugin: "jacoco")
 
-task jacocoTestReport(type: JacocoReport, dependsOn: ['app:testDebugUnitTest']) {
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
     reports {
         xml.enabled = true
         html.enabled = true
@@ -22,15 +22,13 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['app:testDebugUnitTest']) 
             '**/*Service*.*'
     ]
 
-    def debugTree = fileTree(dir: "${project.projectDir}/app/build/tmp/kotlin-classes/debug", excludes: fileExclusions)
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileExclusions)
     def mainSrc = "${project.projectDir}/src/main/java"
-    def executionDir = fileTree(dir: "$project.projectDir", includes: [
-            "jacoco/testDebugUnitTest.exec",
-            "outputs/code-coverage/connected/*coverage.ec"
-    ])
 
     sourceDirectories.setFrom(files([mainSrc]))
     classDirectories.setFrom(files([debugTree]))
-    executionData.setFrom(files([executionDir]))
-
+    executionData.setFrom(fileTree(dir: "$buildDir", includes: [
+            "jacoco/testDebugUnitTest.exec",
+            "outputs/code-coverage/connected/*coverage.ec"
+    ]))
 }
