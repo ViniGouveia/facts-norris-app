@@ -1,0 +1,43 @@
+name: Android CI Configuration
+
+on:
+  pull_request:
+    push:
+      branches:
+        - 'master'
+
+jobs:
+  build:
+    name: Build and Run Detekt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.3
+      - name: Set up our JDK environment
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 1.8
+      - name: Run Detekt
+        run: bash ./gradlew detekt
+  tests:
+    name: Run Unit and Intrumental Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.3
+      - name: Set up our JDK environment
+          uses: actions/setup-java@v1.4.3
+          with:
+            java-version: 1.8
+      - name: Run Unit tests
+        run: bash ./gradlew testDebugUnitTest
+      - name: Initialize Virtual Device
+        uses: reactivecircus/android-emulator-runner@v2
+          with:
+            api-level: 23
+            target: default
+            arch: x86
+            profile: Nexus 6
+            script: bash ./gradlew connectedCheck --stacktrace
+      - name: Run Android tests
+        run: bash ./gradlew connectedDebugAndroidTest
