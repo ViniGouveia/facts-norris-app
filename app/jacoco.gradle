@@ -15,6 +15,15 @@ android {
     testOptions.unitTests.all {
         jacoco {
             includeNoLocationClasses = true
+            jacoco.excludes = ['jdk.internal.*']
+        }
+        useJUnitPlatform()
+        reports {
+            junitXml.enabled = true
+            html.enabled = false
+        }
+        testLogging {
+            events "passed", "skipped", "failed"
         }
     }
 }
@@ -32,22 +41,33 @@ android.testVariants.all {
         description = "Generates Jacoco coverage reports on the ${variant.name} variant"
 
         reports {
-            xml.enabled = true
-            html.enabled = true
+            html {
+                enabled true
+                destination file('build/reports/jacoco/html')
+            }
+            xml {
+                enabled true
+                destination file('build/reports/jacoco/report.xml')
+            }
         }
 
         def excludes = [
+                'android/databinding/**/*.class',
+                '**/android/databinding/*Binding.class',
+                '**/android/databinding/*',
+                '**/androidx/databinding/*',
                 '**/BR.*',
                 '**/R.class',
                 '**/R$*.class',
                 '**/BuildConfig.*',
                 'android/**/*.*',
-                '**/*Module.*',
+                '**/*Module*.*',
+                '**/di',
                 '**/data',
-                '**/*Fragment.*',
-                '**/*Activity.*',
-                '**/*Adapter.*',
-                '**/*Initializer.*',
+                '**/*Fragment*.*',
+                '**/*Activity*.*',
+                '**/*Adapter*.*',
+                '**/*Initializer*.*',
                 '**/*ViewHolder*.*',
                 '**/*Service.*'
         ]
@@ -61,11 +81,6 @@ android.testVariants.all {
                 "jacoco/test${name}UnitTest.exec",
                 'outputs/code-coverage/connected/*coverage.ec'
         ]))
-
-        doLast {
-            println "Wrote HTML coverage report to ${reports.html.destination}/index.html"
-            println "Wrote XML coverage report to ${reports.xml.destination}"
-        }
 
         dependsOn "test${name}UnitTest", "create${name}CoverageReport"
         jacocoTestReport.dependsOn self

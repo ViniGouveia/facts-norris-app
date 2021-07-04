@@ -304,7 +304,7 @@ class SearchViewModelTest {
             val error = Exception()
 
             coEvery { areCategoriesSavedUseCase.areSavedCategories() } throws error
-            coEvery { errorHandler.getErrorMessage(any()) } throws error
+            coEvery { errorHandler.getErrorMessage(any()) } returns ""
 
             viewModel.getSuggestionsAndLastSearches()
 
