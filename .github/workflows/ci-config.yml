@@ -3,10 +3,10 @@ name: Android CI Configuration
 on:
   pull_request:
     branches:
-      - 'master'
+      - 'main'
   push:
     branches:
-      - 'master'
+      - 'main'
 
 jobs:
   build:
