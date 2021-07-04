@@ -26,7 +26,7 @@ $ git clone https://github.com/ViniGouveia/facts-norris-app.git
 
 <h1 align="start">Explicação da arquitetura</h1>
 
-Procurei focar no funcionamento e na manutenção do projeto e tentei o máximo possível seguir os pricípios SOLID e da Clean Architecture.
+Procurei focar no funcionamento e na manutenção do projeto e tentei o máximo possível seguir os princípios SOLID e da Clean Architecture.
 
 <p align="middle">
     <img src="./resources/architecture.png">
@@ -37,30 +37,30 @@ Procurei focar no funcionamento e na manutenção do projeto e tentei o máximo 
 <h1 align="start">Features</h1>
 
 <p align="middle">
-    <img src="./resources/first_access.png">
+    <img src="./resources/first_access.jpg" width="360">
     <p style="text-align:center">Essa é uma representação da primeira tela que o usuário irá ver ao entrar na aplicação.</p>
 </p>
 
 <p align="middle">
-    <img src="./resources/facts_listed.png">
+    <img src="./resources/facts_listed.jpg" width="360">
     <p style="text-align:center">Após realizar alguma busca, os fatos serão carregados e exibidos como no exemplo acima.</p>
 </p>
 
 <p align="middle">
-    <img src="./resources/search_screen.png">
-    <p style="text-align:center">Essa é a tela onde são feitas as buscas no app. São apresentadas 8 sugestões aleatórias cada vez que a tela é exibida, também é exibida as últimas buscas feitas pelo usuário. É possível voltar a tela anterior clicando no botão "back".</p>
+    <img src="./resources/search_screen.jpg" width="360">
+    <p style="text-align:center">Essa é a tela onde são feitas as buscas no app. São apresentadas 8 sugestões aleatórias cada vez que a tela é exibida e também são exibidas as últimas buscas feitas pelo usuário. É possível voltar a tela anterior clicando no botão "back".</p>
 </p>
 
 <h1 align="start">Continuous Integration</h1>
 
 O projeto utiliza Github Actions para executar os scripts de CI quando é aberto um Pull Request ou quando uma Tag é criada.
 
-### Pull Request CI
+<h3 align="start">Pull Request CI</h3>
 
 O script roda em duas etapas:
     - Análise estática do código: O script utiliza o plugin detekt para fazer uma análise do código, verificando se está tudo formatado consistentemente e se não possui algum erro na complexidade.
     - Cobertura de código: o JUnit5 é responsável por executar os testes unitários e instrumentados, o reporte é feito pelo Jacoco e o Codecov.io checa a cobertura de código e se está de acordo com o esperado.
 
-### Tag CI
+<h3 align="start">Tag CI</h3>
 
 O script possui apenas uma etapa, que consiste em gerar um debug APK e da upload nele como um artefato do Github Actions.
