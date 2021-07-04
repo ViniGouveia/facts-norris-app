@@ -14,6 +14,7 @@ import dev.vinigouveia.factsnorris.shared.usecases.IsSearchWordSavedUseCase
 import dev.vinigouveia.factsnorris.shared.usecases.SaveCategoriesUseCase
 import dev.vinigouveia.factsnorris.shared.usecases.SaveExistingSearchWordUseCase
 import dev.vinigouveia.factsnorris.shared.usecases.SaveSearchWordUseCase
+import dev.vinigouveia.factsnorris.ui.search.SearchContract
 import dev.vinigouveia.factsnorris.ui.search.SearchViewModel
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -34,7 +35,7 @@ import org.junit.jupiter.api.Test
 @ExperimentalCoroutinesApi
 class SearchViewModelTest {
 
-    private lateinit var viewModel: SearchViewModel
+    private lateinit var viewModel: SearchContract.ViewModel
 
     private val navigator = mockk<Navigator>()
     private val errorHandler = mockk<ErrorHandler>()
@@ -303,7 +304,7 @@ class SearchViewModelTest {
             val error = Exception()
 
             coEvery { areCategoriesSavedUseCase.areSavedCategories() } throws error
-            coEvery { errorHandler.getErrorMessage(any()) } throws error
+            coEvery { errorHandler.getErrorMessage(any()) } returns ""
 
             viewModel.getSuggestionsAndLastSearches()
 
