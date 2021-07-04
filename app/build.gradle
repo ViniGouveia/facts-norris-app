@@ -36,7 +36,7 @@ android {
         release {
             minifyEnabled false
             applicationIdSuffix ".release"
-            testCoverageEnabled = true
+            testCoverageEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             resValue("string", apiUrlResName, apiUrl)
         }

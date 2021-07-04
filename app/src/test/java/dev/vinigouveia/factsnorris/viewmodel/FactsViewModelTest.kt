@@ -11,6 +11,7 @@ import dev.vinigouveia.factsnorris.shared.navigator.Navigator
 import dev.vinigouveia.factsnorris.shared.usecases.FetchFactsUseCase
 import dev.vinigouveia.factsnorris.shared.usecases.GetLatestSearchWordUseCase
 import dev.vinigouveia.factsnorris.shared.usecases.GetMappedFactsListUseCase
+import dev.vinigouveia.factsnorris.ui.facts.FactsContract
 import dev.vinigouveia.factsnorris.ui.facts.FactsViewModel
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -31,7 +32,7 @@ import org.junit.jupiter.api.Test
 @ExperimentalCoroutinesApi
 class FactsViewModelTest {
 
-    private lateinit var viewModel: FactsViewModel
+    private lateinit var viewModel: FactsContract.ViewModel
 
     @Rule
     val testCoroutineRule = TestCoroutineRule()
