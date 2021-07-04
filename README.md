@@ -2,7 +2,7 @@
 
 
 [![Android Pull Request CI Configuration](https://github.com/ViniGouveia/facts-norris-app/actions/workflows/pr-ci-config.yml/badge.svg)](https://github.com/ViniGouveia/facts-norris-app/actions/workflows/pr-ci-config.yml)
-[![codecov](https://codecov.io/gh/ViniGouveia/facts-norris-app/branch/master/graph/badge.svg?token=4XAK9KX7DV)](https://codecov.io/gh/ViniGouveia/facts-norris-app)
+[![codecov](https://codecov.io/gh/ViniGouveia/facts-norris-app/branch/main/graph/badge.svg?token=4XAK9KX7DV)](https://codecov.io/gh/ViniGouveia/facts-norris-app)
 
 <h1 align="start">Sobre</h1>
 
