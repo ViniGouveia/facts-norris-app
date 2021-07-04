@@ -1,4 +1,4 @@
-name: Android CI Configuration
+name: Android Pull Request CI Configuration
 
 on:
   pull_request:
@@ -22,32 +22,7 @@ jobs:
       - name: Run Detekt
         run: bash ./gradlew detekt
 
-  tests:
-    name: Run Unit and Intrumental Tests
-    runs-on: macos-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2.3.3
-      - name: Set up JDK environment
-        uses: actions/setup-java@v1.4.3
-        with:
-          java-version: 1.8
-      - name: Run Unit tests
-        run: bash ./gradlew testDebugUnitTest
-      - name: Initialize Virtual Device
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          target: default
-          arch: x86
-          profile: Nexus 6
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
-          disable-animations: true
-          script: bash ./gradlew connectedCheck --stacktrace
-      - name: Run Android tests
-        run: bash ./gradlew connectedDebugAndroidTest
-
-  coverage:
+  test-coverage:
     name: Generate Jacoco test report and check code coverage
     runs-on: macos-latest
     steps:
@@ -58,7 +33,15 @@ jobs:
         with:
           java-version: 1.8
       - name: Generate Jacoco test report
-        run: bash ./gradlew jacocoTestReport
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          target: default
+          arch: x86
+          profile: Nexus 6
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: bash ./gradlew jacocoTestReport
       - name: Download Test Reports Folder
         uses: actions/download-artifact@v2
         with:
@@ -66,15 +49,3 @@ jobs:
           path: app/build/reports/coverage/debug
       - name: Upload Test Report
         run: bash <(curl -s https://codecov.io/bash) -f "app/build/reports/coverage/debug/report.xml"
-
-  apk:
-    name: Generate APK
-    runs-on: ubuntu-latest
-    steps:
-      - name: Build debug APK
-        run: bash ./gradlew assembleDebug --stacktrace
-      - name: Upload generated APK
-        uses: actions/upload-artifact@v1
-        with:
-          name: app
-          path: app/build/outputs/apk/debug/app-debug.apk
