@@ -1,8 +1,8 @@
 package dev.vinigouveia.factsnorris.repository
 
-import dev.vinigouveia.factsnorris.shared.data.Fact
-import dev.vinigouveia.factsnorris.shared.data.response.FactResponse
-import dev.vinigouveia.factsnorris.shared.data.response.FactsListResponse
+import dev.vinigouveia.factsnorris.shared.classes.fact.Fact
+import dev.vinigouveia.factsnorris.shared.classes.response.FactResponse
+import dev.vinigouveia.factsnorris.shared.classes.response.FactsListResponse
 import dev.vinigouveia.factsnorris.shared.repositories.FactsRepository
 import dev.vinigouveia.factsnorris.shared.repositories.FactsRepositoryImpl
 import dev.vinigouveia.factsnorris.shared.service.FactsService

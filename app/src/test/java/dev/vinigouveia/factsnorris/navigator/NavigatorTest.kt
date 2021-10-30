@@ -24,16 +24,15 @@ class NavigatorTest {
 
     @BeforeEach
     fun initialize() {
-        navigator = NavigatorImpl()
+        navigator = NavigatorImpl(navController)
     }
 
     @Test
-    fun `should set navigator and navigate successfully`() {
+    fun `should navigate successfully`() {
         val destinationId = R.id.navigate_to_search_from_facts
 
         every { navController.navigate(any<Int>()) } just Runs
 
-        navigator.setNavigator(navController)
         navigator.navigate(destinationId)
 
         verify(exactly = 1) {
@@ -44,33 +43,12 @@ class NavigatorTest {
     }
 
     @Test
-    fun `should reset navigator and do nothing when try to navigate`() {
-        val destinationId = R.id.navigate_to_search_from_facts
-
-        navigator.setNavigator(navController)
-        navigator.resetNavigator()
-        navigator.navigate(destinationId)
-
-        confirmVerified(navController)
-    }
-
-    @Test
     fun `should set navigator and pop back successfully`() {
         every { navController.popBackStack() } returns true
 
-        navigator.setNavigator(navController)
         navigator.popBack()
 
         verify(exactly = 1) { navController.popBackStack() }
-
-        confirmVerified(navController)
-    }
-
-    @Test
-    fun `should reset navigator and do nothing when try to pop`() {
-        navigator.setNavigator(navController)
-        navigator.resetNavigator()
-        navigator.popBack()
 
         confirmVerified(navController)
     }

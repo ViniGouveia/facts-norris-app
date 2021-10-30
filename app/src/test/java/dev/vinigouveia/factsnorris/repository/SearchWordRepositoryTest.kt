@@ -1,6 +1,6 @@
 package dev.vinigouveia.factsnorris.repository
 
-import dev.vinigouveia.factsnorris.shared.data.entities.SearchWordEntity
+import dev.vinigouveia.factsnorris.shared.classes.entities.SearchWordEntity
 import dev.vinigouveia.factsnorris.shared.repositories.SearchWordRepository
 import dev.vinigouveia.factsnorris.shared.repositories.SearchWordRepositoryImpl
 import dev.vinigouveia.factsnorris.shared.room.dao.SearchWordDao

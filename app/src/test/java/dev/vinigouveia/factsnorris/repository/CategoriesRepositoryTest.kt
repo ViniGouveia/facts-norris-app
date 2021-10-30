@@ -1,6 +1,6 @@
 package dev.vinigouveia.factsnorris.repository
 
-import dev.vinigouveia.factsnorris.shared.data.entities.CategoryEntity
+import dev.vinigouveia.factsnorris.shared.classes.entities.CategoryEntity
 import dev.vinigouveia.factsnorris.shared.repositories.CategoriesRepository
 import dev.vinigouveia.factsnorris.shared.repositories.CategoriesRepositoryImpl
 import dev.vinigouveia.factsnorris.shared.room.dao.CategoryDao

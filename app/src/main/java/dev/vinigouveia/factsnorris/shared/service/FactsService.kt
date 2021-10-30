@@ -1,6 +1,6 @@
 package dev.vinigouveia.factsnorris.shared.service
 
-import dev.vinigouveia.factsnorris.shared.data.response.FactsListResponse
+import dev.vinigouveia.factsnorris.shared.classes.response.FactsListResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

@@ -1,20 +1,10 @@
 package dev.vinigouveia.factsnorris.viewmodel
 
+import dev.vinigouveia.factsnorris.R
 import dev.vinigouveia.factsnorris.TestCoroutineRule
 import dev.vinigouveia.factsnorris.shared.errorhandler.ErrorHandler
-import dev.vinigouveia.factsnorris.shared.errorhandler.exceptions.EmptyCategoriesListReturnedException
 import dev.vinigouveia.factsnorris.shared.navigator.Navigator
-import dev.vinigouveia.factsnorris.shared.usecases.AreCategoriesSavedUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.DeleteLastSearchWordUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.FetchCategoriesUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.GetLastSearchWordListUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.GetRandomSuggestionsUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.IsLastSearchesListFullUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.IsSearchWordSavedUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.SaveCategoriesUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.SaveExistingSearchWordUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.SaveSearchWordUseCase
-import dev.vinigouveia.factsnorris.ui.search.SearchContract
+import dev.vinigouveia.factsnorris.shared.usecases.SearchUseCase
 import dev.vinigouveia.factsnorris.ui.search.SearchViewModel
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -35,20 +25,11 @@ import org.junit.jupiter.api.Test
 @ExperimentalCoroutinesApi
 class SearchViewModelTest {
 
-    private lateinit var viewModel: SearchContract.ViewModel
+    private lateinit var viewModel: SearchViewModel
 
     private val navigator = mockk<Navigator>()
     private val errorHandler = mockk<ErrorHandler>()
-    private val fetchCategoriesUseCase = mockk<FetchCategoriesUseCase>()
-    private val saveCategoriesUseCase = mockk<SaveCategoriesUseCase>()
-    private val getLastSearchWordListUseCase = mockk<GetLastSearchWordListUseCase>()
-    private val getRandomSuggestionsUseCase = mockk<GetRandomSuggestionsUseCase>()
-    private val saveSearchWordUseCase = mockk<SaveSearchWordUseCase>()
-    private val deleteLastSearchWordUseCase = mockk<DeleteLastSearchWordUseCase>()
-    private val isLastSearchesListFullUseCase = mockk<IsLastSearchesListFullUseCase>()
-    private val areCategoriesSavedUseCase = mockk<AreCategoriesSavedUseCase>()
-    private val isSearchWordSavedUseCase = mockk<IsSearchWordSavedUseCase>()
-    private val saveExistingSearchWordUseCase = mockk<SaveExistingSearchWordUseCase>()
+    private val searchUseCase = mockk<SearchUseCase>()
 
     @Rule
     val testCoroutineRule = TestCoroutineRule()
@@ -58,16 +39,7 @@ class SearchViewModelTest {
         viewModel = SearchViewModel(
             navigator,
             errorHandler,
-            fetchCategoriesUseCase,
-            saveCategoriesUseCase,
-            getLastSearchWordListUseCase,
-            getRandomSuggestionsUseCase,
-            saveSearchWordUseCase,
-            deleteLastSearchWordUseCase,
-            isLastSearchesListFullUseCase,
-            areCategoriesSavedUseCase,
-            isSearchWordSavedUseCase,
-            saveExistingSearchWordUseCase
+            searchUseCase
         )
     }
 
@@ -97,34 +69,21 @@ class SearchViewModelTest {
                 "search8"
             )
 
-            coEvery { areCategoriesSavedUseCase.areSavedCategories() } returns false
-            coEvery { fetchCategoriesUseCase.fetchCategories() } returns response
-            coEvery { saveCategoriesUseCase.saveCategories(any()) } just Runs
-            coEvery { getLastSearchWordListUseCase.getLastSearchWordList() } returns lastSearches
+            coEvery { searchUseCase.areSavedCategories() } returns false
+            coEvery { searchUseCase.fetchCategories() } returns response
+            coEvery { searchUseCase.saveCategories(any()) } just Runs
+            coEvery { searchUseCase.getLastSearchWordList() } returns lastSearches
 
             viewModel.getSuggestionsAndLastSearches()
 
             coVerify(exactly = 1) {
-                areCategoriesSavedUseCase.areSavedCategories()
-                fetchCategoriesUseCase.fetchCategories()
-                saveCategoriesUseCase.saveCategories(response)
-                getLastSearchWordListUseCase.getLastSearchWordList()
+                searchUseCase.areSavedCategories()
+                searchUseCase.fetchCategories()
+                searchUseCase.saveCategories(response)
+                searchUseCase.getLastSearchWordList()
             }
 
-            confirmVerified(
-                navigator,
-                errorHandler,
-                fetchCategoriesUseCase,
-                saveCategoriesUseCase,
-                getLastSearchWordListUseCase,
-                getRandomSuggestionsUseCase,
-                saveSearchWordUseCase,
-                deleteLastSearchWordUseCase,
-                isLastSearchesListFullUseCase,
-                areCategoriesSavedUseCase,
-                isSearchWordSavedUseCase,
-                saveExistingSearchWordUseCase
-            )
+            confirmVerified(navigator, errorHandler, searchUseCase)
         }
 
     @Test
@@ -143,32 +102,19 @@ class SearchViewModelTest {
 
             val lastSearches = listOf("search")
 
-            coEvery { areCategoriesSavedUseCase.areSavedCategories() } returns true
-            coEvery { getRandomSuggestionsUseCase.getRandomSuggestions() } returns suggestions
-            coEvery { getLastSearchWordListUseCase.getLastSearchWordList() } returns lastSearches
+            coEvery { searchUseCase.areSavedCategories() } returns true
+            coEvery { searchUseCase.getRandomSuggestions() } returns suggestions
+            coEvery { searchUseCase.getLastSearchWordList() } returns lastSearches
 
             viewModel.getSuggestionsAndLastSearches()
 
             coVerify(exactly = 1) {
-                areCategoriesSavedUseCase.areSavedCategories()
-                getRandomSuggestionsUseCase.getRandomSuggestions()
-                getLastSearchWordListUseCase.getLastSearchWordList()
+                searchUseCase.areSavedCategories()
+                searchUseCase.getRandomSuggestions()
+                searchUseCase.getLastSearchWordList()
             }
 
-            confirmVerified(
-                navigator,
-                errorHandler,
-                fetchCategoriesUseCase,
-                saveCategoriesUseCase,
-                getLastSearchWordListUseCase,
-                getRandomSuggestionsUseCase,
-                saveSearchWordUseCase,
-                deleteLastSearchWordUseCase,
-                isLastSearchesListFullUseCase,
-                areCategoriesSavedUseCase,
-                isSearchWordSavedUseCase,
-                saveExistingSearchWordUseCase
-            )
+            confirmVerified(navigator, errorHandler, searchUseCase)
         }
 
     @Test
@@ -188,36 +134,23 @@ class SearchViewModelTest {
 
             val error = Exception()
 
-            coEvery { areCategoriesSavedUseCase.areSavedCategories() } returns false
-            coEvery { fetchCategoriesUseCase.fetchCategories() } returns response
-            coEvery { saveCategoriesUseCase.saveCategories(any()) } just Runs
-            coEvery { getLastSearchWordListUseCase.getLastSearchWordList() } throws error
-            coEvery { errorHandler.getErrorMessage(any()) } returns "error"
+            coEvery { searchUseCase.areSavedCategories() } returns false
+            coEvery { searchUseCase.fetchCategories() } returns response
+            coEvery { searchUseCase.saveCategories(any()) } just Runs
+            coEvery { searchUseCase.getLastSearchWordList() } throws error
+            coEvery { errorHandler.getErrorMessage(any()) } returns R.string.default_error_message
 
             viewModel.getSuggestionsAndLastSearches()
 
             coVerify(exactly = 1) {
-                areCategoriesSavedUseCase.areSavedCategories()
-                fetchCategoriesUseCase.fetchCategories()
-                saveCategoriesUseCase.saveCategories(response)
-                getLastSearchWordListUseCase.getLastSearchWordList()
+                searchUseCase.areSavedCategories()
+                searchUseCase.fetchCategories()
+                searchUseCase.saveCategories(response)
+                searchUseCase.getLastSearchWordList()
                 errorHandler.getErrorMessage(error)
             }
 
-            confirmVerified(
-                navigator,
-                errorHandler,
-                fetchCategoriesUseCase,
-                saveCategoriesUseCase,
-                getLastSearchWordListUseCase,
-                getRandomSuggestionsUseCase,
-                saveSearchWordUseCase,
-                deleteLastSearchWordUseCase,
-                isLastSearchesListFullUseCase,
-                areCategoriesSavedUseCase,
-                isSearchWordSavedUseCase,
-                saveExistingSearchWordUseCase
-            )
+            confirmVerified(navigator, errorHandler, searchUseCase)
         }
 
     @Test
@@ -237,65 +170,40 @@ class SearchViewModelTest {
 
             val error = Exception()
 
-            coEvery { areCategoriesSavedUseCase.areSavedCategories() } returns false
-            coEvery { fetchCategoriesUseCase.fetchCategories() } returns response
-            coEvery { saveCategoriesUseCase.saveCategories(any()) } throws error
-            coEvery { errorHandler.getErrorMessage(any()) } returns "error"
+            coEvery { searchUseCase.areSavedCategories() } returns false
+            coEvery { searchUseCase.fetchCategories() } returns response
+            coEvery { searchUseCase.saveCategories(any()) } throws error
+            coEvery { errorHandler.getErrorMessage(any()) } returns R.string.default_error_message
 
             viewModel.getSuggestionsAndLastSearches()
 
             coVerify(exactly = 1) {
-                areCategoriesSavedUseCase.areSavedCategories()
-                fetchCategoriesUseCase.fetchCategories()
-                saveCategoriesUseCase.saveCategories(response)
+                searchUseCase.areSavedCategories()
+                searchUseCase.fetchCategories()
+                searchUseCase.saveCategories(response)
                 errorHandler.getErrorMessage(error)
             }
 
-            confirmVerified(
-                navigator,
-                errorHandler,
-                fetchCategoriesUseCase,
-                saveCategoriesUseCase,
-                getLastSearchWordListUseCase,
-                getRandomSuggestionsUseCase,
-                saveSearchWordUseCase,
-                deleteLastSearchWordUseCase,
-                isLastSearchesListFullUseCase,
-                areCategoriesSavedUseCase,
-                isSearchWordSavedUseCase,
-                saveExistingSearchWordUseCase
-            )
+            confirmVerified(navigator, errorHandler, searchUseCase)
         }
 
     @Test
     fun `should throws exception when fetching categories`() =
         testCoroutineRule.runBlockingTest {
-            coEvery { areCategoriesSavedUseCase.areSavedCategories() } returns false
-            coEvery { fetchCategoriesUseCase.fetchCategories() } throws EmptyCategoriesListReturnedException
-            coEvery { errorHandler.getErrorMessage(any()) } returns "error"
+            val error = Exception()
+            coEvery { searchUseCase.areSavedCategories() } returns false
+            coEvery { searchUseCase.fetchCategories() } throws error
+            coEvery { errorHandler.getErrorMessage(any()) } returns R.string.default_error_message
 
             viewModel.getSuggestionsAndLastSearches()
 
             coVerify(exactly = 1) {
-                areCategoriesSavedUseCase.areSavedCategories()
-                fetchCategoriesUseCase.fetchCategories()
-                errorHandler.getErrorMessage(EmptyCategoriesListReturnedException)
+                searchUseCase.areSavedCategories()
+                searchUseCase.fetchCategories()
+                errorHandler.getErrorMessage(error)
             }
 
-            confirmVerified(
-                navigator,
-                errorHandler,
-                fetchCategoriesUseCase,
-                saveCategoriesUseCase,
-                getLastSearchWordListUseCase,
-                getRandomSuggestionsUseCase,
-                saveSearchWordUseCase,
-                deleteLastSearchWordUseCase,
-                isLastSearchesListFullUseCase,
-                areCategoriesSavedUseCase,
-                isSearchWordSavedUseCase,
-                saveExistingSearchWordUseCase
-            )
+            confirmVerified(navigator, errorHandler, searchUseCase)
         }
 
     @Test
@@ -303,30 +211,17 @@ class SearchViewModelTest {
         testCoroutineRule.runBlockingTest {
             val error = Exception()
 
-            coEvery { areCategoriesSavedUseCase.areSavedCategories() } throws error
-            coEvery { errorHandler.getErrorMessage(any()) } returns ""
+            coEvery { searchUseCase.areSavedCategories() } throws error
+            coEvery { errorHandler.getErrorMessage(any()) } returns R.string.default_error_message
 
             viewModel.getSuggestionsAndLastSearches()
 
             coVerify(exactly = 1) {
-                areCategoriesSavedUseCase.areSavedCategories()
+                searchUseCase.areSavedCategories()
                 errorHandler.getErrorMessage(error)
             }
 
-            confirmVerified(
-                navigator,
-                errorHandler,
-                fetchCategoriesUseCase,
-                saveCategoriesUseCase,
-                getLastSearchWordListUseCase,
-                getRandomSuggestionsUseCase,
-                saveSearchWordUseCase,
-                deleteLastSearchWordUseCase,
-                isLastSearchesListFullUseCase,
-                areCategoriesSavedUseCase,
-                isSearchWordSavedUseCase,
-                saveExistingSearchWordUseCase
-            )
+            confirmVerified(navigator, errorHandler, searchUseCase)
         }
 
     @Test
@@ -334,35 +229,22 @@ class SearchViewModelTest {
         testCoroutineRule.runBlockingTest {
             `should verify that are categories saved and get random suggestions successfully`()
 
-            coEvery { isLastSearchesListFullUseCase.isLastSearchesListFull(any()) } returns false
-            coEvery { isSearchWordSavedUseCase.isSearchWordSaved(any()) } returns false
-            coEvery { saveSearchWordUseCase.saveSearchWord(any()) } just Runs
+            coEvery { searchUseCase.isLastSearchesListFull(any()) } returns false
+            coEvery { searchUseCase.isSearchWordSaved(any()) } returns false
+            coEvery { searchUseCase.saveSearchWord(any()) } just Runs
             every { navigator.popBack() } just Runs
 
             viewModel.saveSearchWordAndReturn("search2")
 
             coVerify(exactly = 1) {
-                isLastSearchesListFullUseCase.isLastSearchesListFull(1)
-                isSearchWordSavedUseCase.isSearchWordSaved("search2")
-                saveSearchWordUseCase.saveSearchWord("search2")
+                searchUseCase.isLastSearchesListFull(1)
+                searchUseCase.isSearchWordSaved("search2")
+                searchUseCase.saveSearchWord("search2")
             }
 
             verify(exactly = 1) { navigator.popBack() }
 
-            confirmVerified(
-                navigator,
-                errorHandler,
-                fetchCategoriesUseCase,
-                saveCategoriesUseCase,
-                getLastSearchWordListUseCase,
-                getRandomSuggestionsUseCase,
-                saveSearchWordUseCase,
-                deleteLastSearchWordUseCase,
-                isLastSearchesListFullUseCase,
-                areCategoriesSavedUseCase,
-                isSearchWordSavedUseCase,
-                saveExistingSearchWordUseCase
-            )
+            confirmVerified(navigator, errorHandler, searchUseCase)
         }
 
     @Test
@@ -370,35 +252,22 @@ class SearchViewModelTest {
         testCoroutineRule.runBlockingTest {
             `should verify that are categories saved and get random suggestions successfully`()
 
-            coEvery { isLastSearchesListFullUseCase.isLastSearchesListFull(any()) } returns false
-            coEvery { isSearchWordSavedUseCase.isSearchWordSaved(any()) } returns true
-            coEvery { saveExistingSearchWordUseCase.saveExistingSearchWord(any()) } just Runs
+            coEvery { searchUseCase.isLastSearchesListFull(any()) } returns false
+            coEvery { searchUseCase.isSearchWordSaved(any()) } returns true
+            coEvery { searchUseCase.saveExistingSearchWord(any()) } just Runs
             every { navigator.popBack() } just Runs
 
             viewModel.saveSearchWordAndReturn("search")
 
             coVerify(exactly = 1) {
-                isLastSearchesListFullUseCase.isLastSearchesListFull(1)
-                isSearchWordSavedUseCase.isSearchWordSaved("search")
-                saveExistingSearchWordUseCase.saveExistingSearchWord("search")
+                searchUseCase.isLastSearchesListFull(1)
+                searchUseCase.isSearchWordSaved("search")
+                searchUseCase.saveExistingSearchWord("search")
             }
 
             verify(exactly = 1) { navigator.popBack() }
 
-            confirmVerified(
-                navigator,
-                errorHandler,
-                fetchCategoriesUseCase,
-                saveCategoriesUseCase,
-                getLastSearchWordListUseCase,
-                getRandomSuggestionsUseCase,
-                saveSearchWordUseCase,
-                deleteLastSearchWordUseCase,
-                isLastSearchesListFullUseCase,
-                areCategoriesSavedUseCase,
-                isSearchWordSavedUseCase,
-                saveExistingSearchWordUseCase
-            )
+            confirmVerified(navigator, errorHandler, searchUseCase)
         }
 
     @Test
@@ -406,37 +275,24 @@ class SearchViewModelTest {
         testCoroutineRule.runBlockingTest {
             `should verify that are no categories saved, fetch categories and then get last searches successfully`()
 
-            coEvery { isLastSearchesListFullUseCase.isLastSearchesListFull(any()) } returns true
-            coEvery { isSearchWordSavedUseCase.isSearchWordSaved(any()) } returns false
-            coEvery { deleteLastSearchWordUseCase.deleteLastSearchWord() } just Runs
-            coEvery { saveSearchWordUseCase.saveSearchWord(any()) } just Runs
+            coEvery { searchUseCase.isLastSearchesListFull(any()) } returns true
+            coEvery { searchUseCase.isSearchWordSaved(any()) } returns false
+            coEvery { searchUseCase.deleteLastSearchWord() } just Runs
+            coEvery { searchUseCase.saveSearchWord(any()) } just Runs
             every { navigator.popBack() } just Runs
 
             viewModel.saveSearchWordAndReturn("search9")
 
             coVerify(exactly = 1) {
-                isLastSearchesListFullUseCase.isLastSearchesListFull(8)
-                isSearchWordSavedUseCase.isSearchWordSaved("search9")
-                deleteLastSearchWordUseCase.deleteLastSearchWord()
-                saveSearchWordUseCase.saveSearchWord("search9")
+                searchUseCase.isLastSearchesListFull(8)
+                searchUseCase.isSearchWordSaved("search9")
+                searchUseCase.deleteLastSearchWord()
+                searchUseCase.saveSearchWord("search9")
             }
 
             verify(exactly = 1) { navigator.popBack() }
 
-            confirmVerified(
-                navigator,
-                errorHandler,
-                fetchCategoriesUseCase,
-                saveCategoriesUseCase,
-                getLastSearchWordListUseCase,
-                getRandomSuggestionsUseCase,
-                saveSearchWordUseCase,
-                deleteLastSearchWordUseCase,
-                isLastSearchesListFullUseCase,
-                areCategoriesSavedUseCase,
-                isSearchWordSavedUseCase,
-                saveExistingSearchWordUseCase
-            )
+            confirmVerified(navigator, errorHandler, searchUseCase)
         }
 
     @Test
@@ -444,37 +300,22 @@ class SearchViewModelTest {
         testCoroutineRule.runBlockingTest {
             `should verify that are no categories saved, fetch categories and then get last searches successfully`()
 
-            coEvery { isLastSearchesListFullUseCase.isLastSearchesListFull(any()) } returns true
-            coEvery { isSearchWordSavedUseCase.isSearchWordSaved(any()) } returns true
-            coEvery { deleteLastSearchWordUseCase.deleteLastSearchWord() } just Runs
-            coEvery { saveExistingSearchWordUseCase.saveExistingSearchWord(any()) } just Runs
+            coEvery { searchUseCase.isLastSearchesListFull(any()) } returns true
+            coEvery { searchUseCase.isSearchWordSaved(any()) } returns true
+            coEvery { searchUseCase.saveExistingSearchWord(any()) } just Runs
             every { navigator.popBack() } just Runs
 
             viewModel.saveSearchWordAndReturn("search1")
 
             coVerify(exactly = 1) {
-                isLastSearchesListFullUseCase.isLastSearchesListFull(8)
-                isSearchWordSavedUseCase.isSearchWordSaved("search1")
-                deleteLastSearchWordUseCase.deleteLastSearchWord()
-                saveExistingSearchWordUseCase.saveExistingSearchWord("search1")
+                searchUseCase.isLastSearchesListFull(8)
+                searchUseCase.isSearchWordSaved("search1")
+                searchUseCase.saveExistingSearchWord("search1")
             }
 
             verify(exactly = 1) { navigator.popBack() }
 
-            confirmVerified(
-                navigator,
-                errorHandler,
-                fetchCategoriesUseCase,
-                saveCategoriesUseCase,
-                getLastSearchWordListUseCase,
-                getRandomSuggestionsUseCase,
-                saveSearchWordUseCase,
-                deleteLastSearchWordUseCase,
-                isLastSearchesListFullUseCase,
-                areCategoriesSavedUseCase,
-                isSearchWordSavedUseCase,
-                saveExistingSearchWordUseCase
-            )
+            confirmVerified(navigator, errorHandler, searchUseCase)
         }
 
     @Test
@@ -485,19 +326,6 @@ class SearchViewModelTest {
 
         verify(exactly = 1) { navigator.popBack() }
 
-        confirmVerified(
-            navigator,
-            errorHandler,
-            fetchCategoriesUseCase,
-            saveCategoriesUseCase,
-            getLastSearchWordListUseCase,
-            getRandomSuggestionsUseCase,
-            saveSearchWordUseCase,
-            deleteLastSearchWordUseCase,
-            isLastSearchesListFullUseCase,
-            areCategoriesSavedUseCase,
-            isSearchWordSavedUseCase,
-            saveExistingSearchWordUseCase
-        )
+        confirmVerified(navigator, errorHandler, searchUseCase)
     }
 }

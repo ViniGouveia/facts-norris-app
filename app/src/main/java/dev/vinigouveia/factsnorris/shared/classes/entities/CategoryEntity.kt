@@ -1,4 +1,4 @@
-package dev.vinigouveia.factsnorris.shared.data.entities
+package dev.vinigouveia.factsnorris.shared.classes.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

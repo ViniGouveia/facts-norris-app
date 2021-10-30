@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.vinigouveia.factsnorris.databinding.FactsItemBinding
-import dev.vinigouveia.factsnorris.shared.data.FactDisplay
+import dev.vinigouveia.factsnorris.shared.classes.fact.FactDisplay
 
 /**
  * @author Vinicius Gouveia on 29/06/2021
