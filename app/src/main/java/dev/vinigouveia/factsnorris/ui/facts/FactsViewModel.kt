@@ -48,7 +48,7 @@ class FactsViewModel(
                         newSearchWord
                     )
                 )
-            } catch (error: Exception) {
+            } catch (@Suppress("TooGenericExceptionCaught") error: Exception) {
                 facts = listOf()
                 factState.postValue(errorState(errorHandler.getErrorMessage(error)))
             }

@@ -54,7 +54,7 @@ class SearchViewModel(
                 lastSearches = searchUseCase.getLastSearchWordList()
 
                 searchState.postValue(successState(savedCategories, lastSearches))
-            } catch (error: Exception) {
+            } catch (@Suppress("TooGenericExceptionCaught") error: Exception) {
                 hasErrorState(errorHandler.getErrorMessage(error))
             }
         }

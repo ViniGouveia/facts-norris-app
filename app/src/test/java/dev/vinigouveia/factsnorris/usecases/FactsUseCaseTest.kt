@@ -27,7 +27,7 @@ class FactsUseCaseTest {
 
     @BeforeEach
     fun initialize() {
-        useCase = FactsUseCaseImpl(factsRepository, context, searchWordRepository)
+        useCase = FactsUseCaseImpl(factsRepository, searchWordRepository)
     }
 
     @Test
