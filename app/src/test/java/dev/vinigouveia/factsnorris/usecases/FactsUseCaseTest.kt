@@ -1,6 +1,5 @@
 package dev.vinigouveia.factsnorris.usecases
 
-import android.content.Context
 import dev.vinigouveia.factsnorris.R
 import dev.vinigouveia.factsnorris.shared.classes.fact.Fact
 import dev.vinigouveia.factsnorris.shared.classes.fact.FactDisplay
@@ -22,7 +21,6 @@ class FactsUseCaseTest {
     private lateinit var useCase: FactsUseCase
 
     private val factsRepository = mockk<FactsRepository>()
-    private val context = mockk<Context>()
     private val searchWordRepository = mockk<SearchWordRepository>()
 
     @BeforeEach
@@ -104,13 +102,7 @@ class FactsUseCaseTest {
             )
         )
 
-        coEvery { context.getString(any()) } returns "Uncategorized"
-
         Assertions.assertEquals(displayList, useCase.getMappedFactsList(facts))
-
-        coVerify(exactly = 2) { context.getString(R.string.fact_uncategorized) }
-
-        confirmVerified(context)
     }
 
     @Test
