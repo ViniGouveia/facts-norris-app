@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/vini-/Documents/GitHub/facts-norris-app/app/src/main/res/drawable/loading_progress_bar.xml" value="0.37864583333333335" />
+        <entry key="..\:/Users/vini-/Documents/GitHub/facts-norris-app/app/src/main/res/layout/facts_fragment.xml" value="0.3625" />
+        <entry key="..\:/Users/vini-/Documents/GitHub/facts-norris-app/app/src/main/res/layout/loading_layout.xml" value="0.3596014492753623" />
+        <entry key="..\:/Users/vini-/Documents/GitHub/facts-norris-app/app/src/main/res/layout/new_facts_fragment.xml" value="0.3625" />
+        <entry key="..\:/Users/vini-/Documents/GitHub/facts-norris-app/app/src/main/res/layout/new_facts_item.xml" value="0.3625" />
+        <entry key="..\:/Users/vini-/Documents/GitHub/facts-norris-app/app/src/main/res/layout/new_last_seach_item.xml" value="0.3625" />
+        <entry key="..\:/Users/vini-/Documents/GitHub/facts-norris-app/app/src/main/res/layout/new_loading_layout.xml" value="0.3625" />
+        <entry key="..\:/Users/vini-/Documents/GitHub/facts-norris-app/app/src/main/res/layout/new_main_activity.xml" value="0.3625" />
+        <entry key="..\:/Users/vini-/Documents/GitHub/facts-norris-app/app/src/main/res/layout/new_search_fragment.xml" value="0.3625" />
+        <entry key="..\:/Users/vini-/Documents/GitHub/facts-norris-app/app/src/main/res/layout/new_suggestion_item.xml" value="0.3625" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
