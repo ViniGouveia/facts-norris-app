@@ -3,15 +3,11 @@ package dev.vinigouveia.factsnorris.viewmodel
 import com.google.common.truth.Truth.assertThat
 import dev.vinigouveia.factsnorris.R
 import dev.vinigouveia.factsnorris.TestCoroutineRule
-import dev.vinigouveia.factsnorris.shared.data.Fact
-import dev.vinigouveia.factsnorris.shared.data.FactDisplay
+import dev.vinigouveia.factsnorris.shared.classes.fact.Fact
+import dev.vinigouveia.factsnorris.shared.classes.fact.FactDisplay
 import dev.vinigouveia.factsnorris.shared.errorhandler.ErrorHandler
-import dev.vinigouveia.factsnorris.shared.errorhandler.exceptions.SearchTermNotFoundException
 import dev.vinigouveia.factsnorris.shared.navigator.Navigator
-import dev.vinigouveia.factsnorris.shared.usecases.FetchFactsUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.GetLatestSearchWordUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.GetMappedFactsListUseCase
-import dev.vinigouveia.factsnorris.ui.facts.FactsContract
+import dev.vinigouveia.factsnorris.shared.usecases.FactsUseCase
 import dev.vinigouveia.factsnorris.ui.facts.FactsViewModel
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -32,25 +28,21 @@ import org.junit.jupiter.api.Test
 @ExperimentalCoroutinesApi
 class FactsViewModelTest {
 
-    private lateinit var viewModel: FactsContract.ViewModel
+    private lateinit var viewModel: FactsViewModel
 
     @Rule
     val testCoroutineRule = TestCoroutineRule()
 
     private val navigator = mockk<Navigator>()
     private val errorHandler = mockk<ErrorHandler>()
-    private val fetchFactsUseCase = mockk<FetchFactsUseCase>()
-    private val getLatestSearchWordUseCase = mockk<GetLatestSearchWordUseCase>()
-    private val getMappedFactsListUseCase = mockk<GetMappedFactsListUseCase>()
+    private val factsUseCase = mockk<FactsUseCase>()
 
     @BeforeEach
     fun initialize() {
         viewModel = FactsViewModel(
             navigator,
             errorHandler,
-            fetchFactsUseCase,
-            getLatestSearchWordUseCase,
-            getMappedFactsListUseCase
+            factsUseCase
         )
     }
 
@@ -64,77 +56,82 @@ class FactsViewModelTest {
             )
 
             val display = listOf(
-                FactDisplay("id", "Category", "url", R.dimen.text_large),
-                FactDisplay("id2", "Uncategorized", "url", R.dimen.text_large),
-                FactDisplay("id3", "Category", "url", R.dimen.text_large)
+                FactDisplay("id", "Category", "description", R.dimen.text_large),
+                FactDisplay("id2", "Uncategorized", "description", R.dimen.text_large),
+                FactDisplay("id3", "Category", "description", R.dimen.text_large)
             )
 
-            coEvery { getLatestSearchWordUseCase.getLatestSearchWord() } returns "search"
-            coEvery { fetchFactsUseCase.fetchFacts(any()) } returns response
-            coEvery { getMappedFactsListUseCase.getMappedFactsList(any()) } returns display
+            coEvery { factsUseCase.getLatestSearchWord() } returns "search"
+            coEvery { factsUseCase.fetchFacts(any()) } returns response
+            coEvery { factsUseCase.getMappedFactsList(any()) } returns display
 
             viewModel.getLastSearchWordAndFetchFacts()
 
             coVerify(exactly = 1) {
-                getLatestSearchWordUseCase.getLatestSearchWord()
-                fetchFactsUseCase.fetchFacts("search")
-                getMappedFactsListUseCase.getMappedFactsList(response)
+                with(factsUseCase) {
+                    getLatestSearchWord()
+                    fetchFacts("search")
+                    getMappedFactsList(response)
+                }
             }
 
-            confirmVerified(
-                navigator,
-                errorHandler,
-                fetchFactsUseCase,
-                getLatestSearchWordUseCase,
-                getMappedFactsListUseCase
-            )
+            confirmVerified(navigator, errorHandler, factsUseCase)
         }
 
     @Test
     fun `should let error state when getting latest search word`() =
         testCoroutineRule.runBlockingTest {
-            coEvery { getLatestSearchWordUseCase.getLatestSearchWord() } throws SearchTermNotFoundException
-            coEvery { errorHandler.getErrorMessage(any()) } returns "error"
+            val error = Exception()
+            coEvery { factsUseCase.getLatestSearchWord() } throws error
+            coEvery { errorHandler.getErrorMessage(any()) } returns R.string.default_error_message
 
             viewModel.getLastSearchWordAndFetchFacts()
 
             coVerify(exactly = 1) {
-                getLatestSearchWordUseCase.getLatestSearchWord()
-                errorHandler.getErrorMessage(SearchTermNotFoundException)
+                factsUseCase.getLatestSearchWord()
+                errorHandler.getErrorMessage(error)
             }
 
-            confirmVerified(
-                navigator,
-                errorHandler,
-                fetchFactsUseCase,
-                getLatestSearchWordUseCase,
-                getMappedFactsListUseCase
-            )
+            confirmVerified(navigator, errorHandler, factsUseCase)
+        }
+
+    @Test
+    fun `should let empty state when fetching facts`() =
+        testCoroutineRule.runBlockingTest {
+            coEvery { factsUseCase.getLatestSearchWord() } returns "search"
+            coEvery { factsUseCase.fetchFacts(any()) } returns listOf()
+
+            viewModel.getLastSearchWordAndFetchFacts()
+
+            coVerify(exactly = 1) {
+                with(factsUseCase) {
+                    getLatestSearchWord()
+                    fetchFacts("search")
+                }
+            }
+
+            confirmVerified(navigator, errorHandler, factsUseCase)
         }
 
     @Test
     fun `should let error state when getting fetching facts`() =
         testCoroutineRule.runBlockingTest {
             val error = Exception()
-            coEvery { getLatestSearchWordUseCase.getLatestSearchWord() } returns "search"
-            coEvery { fetchFactsUseCase.fetchFacts(any()) } throws error
-            coEvery { errorHandler.getErrorMessage(any()) } returns "error"
+            coEvery { factsUseCase.getLatestSearchWord() } returns "search"
+            coEvery { factsUseCase.fetchFacts(any()) } throws error
+            coEvery { errorHandler.getErrorMessage(any()) } returns R.string.default_error_message
 
             viewModel.getLastSearchWordAndFetchFacts()
 
             coVerify(exactly = 1) {
-                getLatestSearchWordUseCase.getLatestSearchWord()
-                fetchFactsUseCase.fetchFacts("search")
+                with(factsUseCase) {
+                    getLatestSearchWord()
+                    fetchFacts("search")
+                }
                 errorHandler.getErrorMessage(error)
             }
 
-            confirmVerified(
-                navigator,
-                errorHandler,
-                fetchFactsUseCase,
-                getLatestSearchWordUseCase,
-                getMappedFactsListUseCase
-            )
+            confirmVerified(navigator, errorHandler, factsUseCase)
         }
 
     @Test
@@ -146,27 +143,23 @@ class FactsViewModelTest {
                 Fact("id3", "category", "url", "description")
             )
             val error = Exception()
-            coEvery { getLatestSearchWordUseCase.getLatestSearchWord() } returns "search"
-            coEvery { fetchFactsUseCase.fetchFacts(any()) } returns response
-            coEvery { getMappedFactsListUseCase.getMappedFactsList(any()) } throws error
-            coEvery { errorHandler.getErrorMessage(any()) } returns "error"
+            coEvery { factsUseCase.getLatestSearchWord() } returns "search"
+            coEvery { factsUseCase.fetchFacts(any()) } returns response
+            coEvery { factsUseCase.getMappedFactsList(any()) } throws error
+            coEvery { errorHandler.getErrorMessage(any()) } returns R.string.default_error_message
 
             viewModel.getLastSearchWordAndFetchFacts()
 
             coVerify(exactly = 1) {
-                getLatestSearchWordUseCase.getLatestSearchWord()
-                fetchFactsUseCase.fetchFacts("search")
-                getMappedFactsListUseCase.getMappedFactsList(response)
+                with(factsUseCase) {
+                    getLatestSearchWord()
+                    fetchFacts("search")
+                    getMappedFactsList(response)
+                }
                 errorHandler.getErrorMessage(error)
             }
 
-            confirmVerified(
-                navigator,
-                errorHandler,
-                fetchFactsUseCase,
-                getLatestSearchWordUseCase,
-                getMappedFactsListUseCase
-            )
+            confirmVerified(navigator, errorHandler, factsUseCase)
         }
 
     @Test
@@ -177,13 +170,7 @@ class FactsViewModelTest {
 
         verify(exactly = 1) { navigator.navigate(R.id.navigate_to_search_from_facts) }
 
-        confirmVerified(
-            navigator,
-            errorHandler,
-            fetchFactsUseCase,
-            getLatestSearchWordUseCase,
-            getMappedFactsListUseCase
-        )
+        confirmVerified(navigator, errorHandler, factsUseCase)
     }
 
     @Test
@@ -194,12 +181,6 @@ class FactsViewModelTest {
 
         assertThat(viewModel.shareFact("id")).isEqualTo(fact)
 
-        confirmVerified(
-            navigator,
-            errorHandler,
-            fetchFactsUseCase,
-            getLatestSearchWordUseCase,
-            getMappedFactsListUseCase
-        )
+        confirmVerified(navigator, errorHandler, factsUseCase)
     }
 }

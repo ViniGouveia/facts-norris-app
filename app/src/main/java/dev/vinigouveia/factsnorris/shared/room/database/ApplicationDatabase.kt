@@ -2,8 +2,8 @@ package dev.vinigouveia.factsnorris.shared.room.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import dev.vinigouveia.factsnorris.shared.data.entities.CategoryEntity
-import dev.vinigouveia.factsnorris.shared.data.entities.SearchWordEntity
+import dev.vinigouveia.factsnorris.shared.classes.entities.CategoryEntity
+import dev.vinigouveia.factsnorris.shared.classes.entities.SearchWordEntity
 import dev.vinigouveia.factsnorris.shared.room.dao.CategoryDao
 import dev.vinigouveia.factsnorris.shared.room.dao.SearchWordDao
 

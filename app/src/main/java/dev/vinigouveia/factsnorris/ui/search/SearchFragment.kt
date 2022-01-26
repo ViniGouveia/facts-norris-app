@@ -14,10 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dev.vinigouveia.factsnorris.R
 import dev.vinigouveia.factsnorris.databinding.SearchFragmentBinding
 import dev.vinigouveia.factsnorris.databinding.SuggestionItemBinding
+import dev.vinigouveia.factsnorris.shared.classes.SearchState
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
+import org.koin.core.parameter.parametersOf
 
 /**
  * @author Vinicius Gouveia on 29/06/2021
@@ -25,12 +27,12 @@ import org.koin.core.context.unloadKoinModules
 
 class SearchFragment : Fragment(R.layout.search_fragment) {
 
-    private var viewBind: SearchFragmentBinding? = null
+    private lateinit var viewBind: SearchFragmentBinding
 
-    private val binding get() = viewBind!!
+    private val binding get() = viewBind
 
     private val adapter: LastSearchesAdapter by inject()
-    private val viewModel: SearchViewModel by viewModel()
+    private val viewModel: SearchViewModel by viewModel { parametersOf(this) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,29 +53,22 @@ class SearchFragment : Fragment(R.layout.search_fragment) {
     override fun onDestroy() {
         super.onDestroy()
         unloadKoinModules(searchModule)
-        viewBind = null
     }
 
     private fun initializeEvents() {
         binding.apply {
-            val suggestionsObserver = Observer<List<String>> { fillCategorySuggestions(it) }
-            val lastSearchesObserver = Observer<List<String>> { adapter.submitList(it) }
-            val loadingStateObserver =
-                Observer<Boolean> { isLoading -> loading.isVisible = isLoading }
-            val errorMessageObserver =
-                Observer<String> { errorMessage -> suggestionsError.text = errorMessage }
-            val errorStateObserver = Observer<Boolean> { hasError ->
-                searchSuggestions.isVisible = !hasError
-                suggestionsError.isVisible = hasError
+            val searchStateObserver = Observer<SearchState> {
+                loading.isVisible = it.isLoading
+                adapter.submitList(it.lastSearchesList)
+                fillCategorySuggestions(it.suggestionsList)
+                suggestionsError.text = getString(it.errorMessage)
+                searchSuggestions.isVisible = !it.hasError
+                suggestionsError.isVisible = it.hasError
             }
 
             with(viewModel) {
                 viewLifecycleOwner.also {
-                    suggestionsList.observe(it, suggestionsObserver)
-                    lastSearchesList.observe(it, lastSearchesObserver)
-                    loadingState.observe(it, loadingStateObserver)
-                    errorMessage.observe(it, errorMessageObserver)
-                    errorState.observe(it, errorStateObserver)
+                    searchState.observe(it, searchStateObserver)
                 }
             }
         }

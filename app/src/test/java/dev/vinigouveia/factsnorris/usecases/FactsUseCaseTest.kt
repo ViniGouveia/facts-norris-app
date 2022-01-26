@@ -1,32 +1,49 @@
 package dev.vinigouveia.factsnorris.usecases
 
-import android.content.Context
 import dev.vinigouveia.factsnorris.R
-import dev.vinigouveia.factsnorris.shared.data.Fact
-import dev.vinigouveia.factsnorris.shared.data.FactDisplay
-import dev.vinigouveia.factsnorris.shared.usecases.GetMappedFactsListUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.GetMappedFactsListUseCaseImpl
+import dev.vinigouveia.factsnorris.shared.classes.fact.Fact
+import dev.vinigouveia.factsnorris.shared.classes.fact.FactDisplay
+import dev.vinigouveia.factsnorris.shared.repositories.FactsRepository
+import dev.vinigouveia.factsnorris.shared.repositories.SearchWordRepository
+import dev.vinigouveia.factsnorris.shared.usecases.FactsUseCase
+import dev.vinigouveia.factsnorris.shared.usecases.FactsUseCaseImpl
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-/**
- * @author Vinicius Gouveia on 30/06/2021
- */
-class GetMappedFactsListUseCaseTest {
+class FactsUseCaseTest {
 
-    private lateinit var useCase: GetMappedFactsListUseCase
+    private lateinit var useCase: FactsUseCase
 
-    private val context = mockk<Context>()
+    private val factsRepository = mockk<FactsRepository>()
+    private val searchWordRepository = mockk<SearchWordRepository>()
 
     @BeforeEach
     fun initialize() {
-        useCase = GetMappedFactsListUseCaseImpl(context)
+        useCase = FactsUseCaseImpl(factsRepository, searchWordRepository)
+    }
+
+    @Test
+    fun `should fetch facts successfully`() = runBlocking {
+        val response = listOf(
+            Fact("id", null, "url", "description"),
+            Fact("id", null, "url", "description")
+        )
+
+        coEvery { factsRepository.fetchFacts(any()) } returns response
+
+        Assertions.assertEquals(response, useCase.fetchFacts(""))
+
+        coVerify(exactly = 1) {
+            factsRepository.fetchFacts("")
+        }
+
+        confirmVerified(factsRepository)
     }
 
     @Test
@@ -85,12 +102,22 @@ class GetMappedFactsListUseCaseTest {
             )
         )
 
-        coEvery { context.getString(any()) } returns "Uncategorized"
-
-        assertEquals(displayList, useCase.getMappedFactsList(facts))
-
-        coVerify(exactly = 2) { context.getString(R.string.fact_uncategorized) }
-
-        confirmVerified(context)
+        Assertions.assertEquals(displayList, useCase.getMappedFactsList(facts))
     }
+
+    @Test
+    fun `should get latest search word successfully`() = runBlocking {
+        val response = "lastSearch"
+
+        coEvery { searchWordRepository.getLatestSearchWord() } returns response
+
+        Assertions.assertEquals(response, useCase.getLatestSearchWord())
+
+        coVerify(exactly = 1) {
+            searchWordRepository.getLatestSearchWord()
+        }
+
+        confirmVerified(searchWordRepository)
+    }
+
 }

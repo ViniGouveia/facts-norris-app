@@ -1,5 +1,7 @@
 package dev.vinigouveia.factsnorris.ui.search
 
+import androidx.navigation.fragment.findNavController
+import dev.vinigouveia.factsnorris.shared.navigator.NavigatorImpl
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -9,18 +11,9 @@ import org.koin.dsl.module
 
 val searchModule = module {
     factory { LastSearchesAdapter() }
-    viewModel {
+    viewModel { (fragment: SearchFragment) ->
         SearchViewModel(
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
+            NavigatorImpl(fragment.findNavController()),
             get(),
             get()
         )

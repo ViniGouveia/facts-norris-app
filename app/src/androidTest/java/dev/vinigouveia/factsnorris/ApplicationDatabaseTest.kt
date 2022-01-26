@@ -5,8 +5,8 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
-import dev.vinigouveia.factsnorris.shared.data.entities.CategoryEntity
-import dev.vinigouveia.factsnorris.shared.data.entities.SearchWordEntity
+import dev.vinigouveia.factsnorris.shared.classes.entities.CategoryEntity
+import dev.vinigouveia.factsnorris.shared.classes.entities.SearchWordEntity
 import dev.vinigouveia.factsnorris.shared.room.dao.CategoryDao
 import dev.vinigouveia.factsnorris.shared.room.dao.SearchWordDao
 import dev.vinigouveia.factsnorris.shared.room.database.ApplicationDatabase

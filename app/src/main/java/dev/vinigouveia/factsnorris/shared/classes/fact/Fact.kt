@@ -1,4 +1,4 @@
-package dev.vinigouveia.factsnorris.shared.data
+package dev.vinigouveia.factsnorris.shared.classes.fact
 
 /**
  * @author Vinicius Gouveia on 28/06/2021

@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import dev.vinigouveia.factsnorris.shared.data.entities.SearchWordEntity
+import dev.vinigouveia.factsnorris.shared.classes.entities.SearchWordEntity
 
 /**
  * @author Vinicius Gouveia on 27/06/2021
@@ -16,7 +16,7 @@ interface SearchWordDao {
     suspend fun insertSearchWord(searchWord: SearchWordEntity)
 
     @Query("SELECT * FROM last_searches_table ORDER BY id DESC LIMIT 1")
-    suspend fun getLatestSearchWord(): SearchWordEntity
+    suspend fun getLatestSearchWord(): SearchWordEntity?
 
     @Query("SELECT * FROM last_searches_table ORDER BY id DESC")
     suspend fun getLastSearchWordList(): List<SearchWordEntity>

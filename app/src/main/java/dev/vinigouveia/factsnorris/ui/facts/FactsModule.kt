@@ -1,5 +1,7 @@
 package dev.vinigouveia.factsnorris.ui.facts
 
+import androidx.navigation.fragment.findNavController
+import dev.vinigouveia.factsnorris.shared.navigator.NavigatorImpl
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -9,11 +11,9 @@ import org.koin.dsl.module
 
 val factsModule = module {
     factory { FactsAdapter() }
-    viewModel {
+    viewModel { (fragment: FactsFragment) ->
         FactsViewModel(
-            get(),
-            get(),
-            get(),
+            NavigatorImpl(fragment.findNavController()),
             get(),
             get()
         )

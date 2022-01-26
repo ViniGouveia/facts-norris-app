@@ -2,6 +2,7 @@
     <string name="app_name">Facts Norris</string>
 
     <!-- Facts Fragment -->
+    <string name="empty_string" />
     <string name="facts_quantity">Facts:</string>
     <string name="facts_category">Searching for:</string>
     <string name="facts_category_empty">----</string>

@@ -4,62 +4,60 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.vinigouveia.factsnorris.R
-import dev.vinigouveia.factsnorris.shared.data.Fact
-import dev.vinigouveia.factsnorris.shared.data.FactDisplay
+import dev.vinigouveia.factsnorris.shared.classes.FactState
+import dev.vinigouveia.factsnorris.shared.classes.FactState.Companion.emptyState
+import dev.vinigouveia.factsnorris.shared.classes.FactState.Companion.errorState
+import dev.vinigouveia.factsnorris.shared.classes.FactState.Companion.firstAccessState
+import dev.vinigouveia.factsnorris.shared.classes.FactState.Companion.loadingState
+import dev.vinigouveia.factsnorris.shared.classes.FactState.Companion.successState
+import dev.vinigouveia.factsnorris.shared.classes.fact.Fact
 import dev.vinigouveia.factsnorris.shared.errorhandler.ErrorHandler
 import dev.vinigouveia.factsnorris.shared.navigator.Navigator
-import dev.vinigouveia.factsnorris.shared.usecases.FetchFactsUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.GetLatestSearchWordUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.GetMappedFactsListUseCase
+import dev.vinigouveia.factsnorris.shared.usecases.FactsUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FactsViewModel(
     private val navigator: Navigator,
     private val errorHandler: ErrorHandler,
-    private val fetchFactsUseCase: FetchFactsUseCase,
-    private val getLatestSearchWordUseCase: GetLatestSearchWordUseCase,
-    private val getMappedFactsListUseCase: GetMappedFactsListUseCase
-) : ViewModel(), FactsContract.ViewModel {
+    private val factsUseCase: FactsUseCase
+) : ViewModel() {
 
-    val factsList = MutableLiveData<List<FactDisplay>>()
-
-    val errorMessage = MutableLiveData<String>()
-    val searchWord = MutableLiveData<String>()
-    val quantity = MutableLiveData<String>()
-
-    val loadingState = MutableLiveData<Boolean>()
-    val errorState = MutableLiveData<Boolean>()
+    val factState = MutableLiveData<FactState>()
 
     private var facts: List<Fact> = listOf()
 
-    override fun getLastSearchWordAndFetchFacts() {
+    fun getLastSearchWordAndFetchFacts() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val newSearchWord = getLatestSearchWordUseCase.getLatestSearchWord()
-                searchWord.postValue(newSearchWord)
+                factState.postValue(loadingState())
 
-                loadingState.postValue(true)
+                val newSearchWord = factsUseCase.getLatestSearchWord()
 
-                facts = fetchFactsUseCase.fetchFacts(newSearchWord)
-                factsList.postValue(getMappedFactsListUseCase.getMappedFactsList(facts))
-                quantity.postValue(facts.size.toString())
+                if (newSearchWord.isNullOrEmpty()) {
+                    factState.postValue(firstAccessState())
+                    return@launch
+                }
 
-                loadingState.postValue(false)
-                errorState.postValue(false)
+                facts = factsUseCase.fetchFacts(newSearchWord)
+
+                factState.postValue(
+                    if (facts.isEmpty()) emptyState()
+                    else successState(
+                        factsUseCase.getMappedFactsList(facts),
+                        newSearchWord
+                    )
+                )
             } catch (@Suppress("TooGenericExceptionCaught") error: Exception) {
                 facts = listOf()
-                quantity.postValue(facts.size.toString())
-                loadingState.postValue(false)
-                errorMessage.postValue(errorHandler.getErrorMessage(error))
-                errorState.postValue(true)
+                factState.postValue(errorState(errorHandler.getErrorMessage(error)))
             }
         }
     }
 
-    override fun navigateToShareFragment() =
+    fun navigateToShareFragment() =
         navigator.navigate(R.id.navigate_to_search_from_facts)
 
-    override fun shareFact(id: String) =
+    fun shareFact(id: String) =
         facts.first { it.id == id }
 }

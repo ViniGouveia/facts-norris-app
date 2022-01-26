@@ -3,18 +3,14 @@ package dev.vinigouveia.factsnorris.ui.search
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.vinigouveia.factsnorris.shared.classes.SearchState
+import dev.vinigouveia.factsnorris.shared.classes.SearchState.Companion.emptyState
+import dev.vinigouveia.factsnorris.shared.classes.SearchState.Companion.hasErrorState
+import dev.vinigouveia.factsnorris.shared.classes.SearchState.Companion.loadingState
+import dev.vinigouveia.factsnorris.shared.classes.SearchState.Companion.successState
 import dev.vinigouveia.factsnorris.shared.errorhandler.ErrorHandler
 import dev.vinigouveia.factsnorris.shared.navigator.Navigator
-import dev.vinigouveia.factsnorris.shared.usecases.AreCategoriesSavedUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.DeleteLastSearchWordUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.FetchCategoriesUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.GetLastSearchWordListUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.GetRandomSuggestionsUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.IsLastSearchesListFullUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.IsSearchWordSavedUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.SaveCategoriesUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.SaveExistingSearchWordUseCase
-import dev.vinigouveia.factsnorris.shared.usecases.SaveSearchWordUseCase
+import dev.vinigouveia.factsnorris.shared.usecases.SearchUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -26,79 +22,67 @@ import kotlinx.coroutines.launch
 class SearchViewModel(
     private val navigator: Navigator,
     private val errorHandler: ErrorHandler,
-    private val fetchCategoriesUseCase: FetchCategoriesUseCase,
-    private val saveCategoriesUseCase: SaveCategoriesUseCase,
-    private val getLastSearchWordListUseCase: GetLastSearchWordListUseCase,
-    private val getRandomSuggestionsUseCase: GetRandomSuggestionsUseCase,
-    private val saveSearchWordUseCase: SaveSearchWordUseCase,
-    private val deleteLastSearchWordUseCase: DeleteLastSearchWordUseCase,
-    private val isLastSearchesListFullUseCase: IsLastSearchesListFullUseCase,
-    private val areCategoriesSavedUseCase: AreCategoriesSavedUseCase,
-    private val isSearchWordSavedUseCase: IsSearchWordSavedUseCase,
-    private val saveExistingSearchWordUseCase: SaveExistingSearchWordUseCase
-) : ViewModel(), SearchContract.ViewModel {
+    private val searchUseCase: SearchUseCase
+) : ViewModel() {
 
-    val suggestionsList = MutableLiveData<List<String>>()
-    val lastSearchesList = MutableLiveData<List<String>>()
-
-    val loadingState = MutableLiveData<Boolean>()
-    val errorState = MutableLiveData<Boolean>()
-
-    val errorMessage = MutableLiveData<String>()
+    val searchState = MutableLiveData<SearchState>()
 
     private lateinit var lastSearches: List<String>
 
-    override fun getSuggestionsAndLastSearches() {
+    fun getSuggestionsAndLastSearches() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val areCategoriesSaved = areCategoriesSavedUseCase.areSavedCategories()
+                val areCategoriesSaved = searchUseCase.areSavedCategories()
 
                 val savedCategories = if (areCategoriesSaved) {
-                    getRandomSuggestionsUseCase.getRandomSuggestions()
+                    searchUseCase.getRandomSuggestions()
                 } else {
-                    loadingState.postValue(true)
+                    searchState.postValue(loadingState())
 
-                    val categories = fetchCategoriesUseCase.fetchCategories()
-                    saveCategoriesUseCase.saveCategories(categories)
+                    val categories = searchUseCase.fetchCategories()
 
-                    loadingState.postValue(false)
-                    errorState.postValue(false)
+                    if (categories.isEmpty()) {
+                        searchState.postValue(emptyState())
+                        return@launch
+                    }
+
+                    searchUseCase.saveCategories(categories)
 
                     categories.shuffled().subList(FIRST_INDEX, LAST_INDEX)
                 }
 
-                lastSearches = getLastSearchWordListUseCase.getLastSearchWordList()
+                lastSearches = searchUseCase.getLastSearchWordList()
 
-                lastSearchesList.postValue(lastSearches)
-                suggestionsList.postValue(savedCategories)
+                searchState.postValue(successState(savedCategories, lastSearches))
             } catch (@Suppress("TooGenericExceptionCaught") error: Exception) {
-                loadingState.postValue(false)
-                errorMessage.postValue(errorHandler.getErrorMessage(error))
-                errorState.postValue(true)
+                hasErrorState(errorHandler.getErrorMessage(error))
             }
         }
     }
 
-    override fun saveSearchWordAndReturn(searchWord: String) {
+    fun saveSearchWordAndReturn(searchWord: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val isLastSearchesFull =
-                isLastSearchesListFullUseCase.isLastSearchesListFull(lastSearches.size)
+                searchUseCase.isLastSearchesListFull(lastSearches.size)
 
-            val doesSearchWordExists = isSearchWordSavedUseCase.isSearchWordSaved(searchWord)
+            val doesSearchWordExists = searchUseCase.isSearchWordSaved(searchWord)
 
             if (isLastSearchesFull) {
-                deleteLastSearchWordUseCase.deleteLastSearchWord()
+                if (doesSearchWordExists) searchUseCase.saveExistingSearchWord(searchWord)
+                else {
+                    searchUseCase.deleteLastSearchWord()
+                    searchUseCase.saveSearchWord(searchWord)
+                }
+            } else {
+                if (doesSearchWordExists) searchUseCase.saveExistingSearchWord(searchWord)
+                else searchUseCase.saveSearchWord(searchWord)
             }
-
-            if (doesSearchWordExists) {
-                saveExistingSearchWordUseCase.saveExistingSearchWord(searchWord)
-            } else saveSearchWordUseCase.saveSearchWord(searchWord)
         }
 
         navigator.popBack()
     }
 
-    override fun onBackPressed() {
+    fun onBackPressed() {
         navigator.popBack()
     }
 
